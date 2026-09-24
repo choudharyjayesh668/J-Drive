@@ -92,9 +92,25 @@ export default function HomePage(){
             conbsole.log(error);
         }
     }
+    const handleLogout = async () => {
+    try {
+        await axios.post(
+            "http://localhost:3000/logout",
+            {},
+            {
+                withCredentials: true,
+            }
+        );
+        window.location.href = "/login";
+        // navigate("/login");
+    } catch (err) {
+        console.log(err);
+    }
+}
     return(
         <>
             <h1>Homepage</h1>
+            <button onClick={handleLogout}>Logout</button>
             <form onSubmit={handleCreateFolder}>
                 <input type="text" 
                 name="name"

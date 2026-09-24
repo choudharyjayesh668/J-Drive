@@ -1,10 +1,13 @@
 const express=require("express");
 const cors=require("cors");
-
+const bcrypt=require("bcryptjs");
 const folderRoutes = require("./routes/folderRoutes");
+const authRoutes = require("./routes/authRoutes");
+const healthRoutes = require("./routes/healthRoutes");
 
+const JWT=require("jsonwebtoken")
 const app=express();
-
+const cookieParser = require("cookie-parser");
 app.use(
   cors({
     origin: process.env.CLIENT_URL,
@@ -14,38 +17,11 @@ app.use(
 
 app.use(express.urlencoded({extended:true}));
 app.use(express.json());
-
-//Health Checker
-app.get("/health", (req, res) => {
-    res.status(200).json({
-        status: "OK"
-    });
-});
+app.use(cookieParser());
 
 
 app.use("/", folderRoutes);
-const Folder = require("./models/folder");
-app.put("/folder/:id",async (req,res) => {
-  try{
-    const {id} = req.params;
-    const {folderName} = req.body;
-    const foundFolder = await Folder.findOne({_id: id});
-    if (!foundFolder) {
-      return res.status(404).json({
-        message: "Folder not found",
-      });
-    }
-    foundFolder.folderName=folderName;
-    await foundFolder.save();
-    res.status(200).json({
-      message: "Folder renamed successfully",
-      data: foundFolder,
-    });
-  }catch (err) {
-        res.status(500).json({
-            message: err.message,
-        });
-    }
-});
+app.use("/", authRoutes);
+app.use("/", healthRoutes);
 
 module.exports = app;
