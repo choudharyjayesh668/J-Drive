@@ -3,7 +3,7 @@ const Folder = require("../models/folder");
 const deleteFolder = async (req, res) => {
   try {
     const { id } = req.params;
-    console.log(id);
+    // console.log(id);
     await Folder.deleteOne({
       _id: id,
     });

@@ -7,7 +7,7 @@ const createFolder = async (req, res) => {
       folderName: createFolder.name
     });
     await newFolder.save();
-    console.log("Folder Created");
+    // console.log("Folder Created");
     res.status(201).json({
       message: "Folder Has Been Created",
       folder: newFolder

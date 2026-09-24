@@ -5,6 +5,9 @@ export default function HomePage(){
     const navigate =  useNavigate();
     const [createFolder,setCreateFolder] = useState({ name : "" });
     const [allfolder,setAllFolder] = useState([]);
+    const [folderNewName,setFolderNewName] = useState("");
+    const [showRename,setShowRename] = useState(false);
+    const [renameId,setRenameId] = useState(null);
     const handleOnChange = (event) =>{
         setCreateFolder({[event.target.name]:event.target.value})
     }
@@ -62,7 +65,32 @@ export default function HomePage(){
         }
     }
     const handleRename = async (id) =>{
-        
+        try{
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/folder/${id}`,
+            );
+            setFolderNewName(response.data.folder.folderName);
+            setRenameId(id);
+            setShowRename(true);
+        }catch(error){
+            console.log(error);
+        }
+    }
+    const handleRenameSubmit = async (event) =>{
+        event.preventDefault();
+        try{
+            console.log(folderNewName);
+            const response = await axios.put(
+                `${import.meta.env.VITE_API_URL}/folder/${renameId}`,
+                {
+                    folderName:folderNewName,
+                }
+            );
+            setShowRename(false);
+            fetchFolder();
+        }catch(error){
+            conbsole.log(error);
+        }
     }
     return(
         <>
@@ -85,6 +113,22 @@ export default function HomePage(){
                     </div>
                 ))}
             </div>
+            {
+                showRename && (
+                    <div>
+                        <form onSubmit={handleRenameSubmit}>
+                            <h1>Rename Folder{folderNewName}</h1>
+                            <input type="text" 
+                            placeholder="Rename Folder"
+                            value={folderNewName}
+                            onChange={(e) => setFolderNewName(e.target.value)}
+                            />
+                            <button type="submit">Apply Changes</button>
+                            <button type="button" onClick={()=>setShowRename(false)}>Cancle</button>
+                        </form>
+                    </div>
+                )
+            }
         </>
     );
 };

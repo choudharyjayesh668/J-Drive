@@ -5,6 +5,9 @@ export default function Folder(){
     const handleHomepage = () => {
         navigate(`/homepage`)
     }
+    const fetchFolderInfo = async () => {
+        
+    }
     return(
         <>
             <h1>Folder</h1>
