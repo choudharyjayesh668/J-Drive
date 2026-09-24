@@ -1,6 +1,8 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 export default function HomePage(){
+    const navigate =  useNavigate();
     const [createFolder,setCreateFolder] = useState({ name : "" });
     const [allfolder,setAllFolder] = useState([]);
     const handleOnChange = (event) =>{
@@ -49,7 +51,18 @@ export default function HomePage(){
         }
     };
     const handleOpenFolder = async (id) => {
-        console.log("Clicked Open");
+        console.log("Double Clicked");
+        try{
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/folder/${id}`,
+            );
+            navigate(`/folder/${id}`);
+        }catch(error){
+            console.log(`Folder Opened Failed ${error}`);
+        }
+    }
+    const handleRename = async (id) =>{
+        
     }
     return(
         <>
@@ -66,7 +79,8 @@ export default function HomePage(){
             <div>
                 {allfolder.map((folder)=>(
                     <div key={folder._id} >
-                        <h3 onClick={()=>handleOpenFolder(folder._id)}>{folder.folderName}</h3>
+                        <h3 onDoubleClick={()=>handleOpenFolder(folder._id)}>{folder.folderName}</h3>
+                        <button onClick={()=>handleRename(folder._id)}>Rename </button>
                         <button onClick={()=>handleDelete(folder._id)}>Delete -</button>
                     </div>
                 ))}
