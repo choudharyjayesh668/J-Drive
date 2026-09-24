@@ -4,7 +4,7 @@ const openFolder = async (req, res) => {
   try {
     const { id } = req.params;
     // console.log(id);
-    const folder = await Folder.findById(id);
+    const folder = await Folder.findOne({_id: id,owner: req.userId});
     if (!folder) {
       return res.status(404).json({
         message: "Folder not found",

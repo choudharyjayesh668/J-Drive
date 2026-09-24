@@ -5,6 +5,11 @@ const folderSchema=new mongoose.Schema({
         required:true,
         trim: true,
     },
+    owner:{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"User",
+        required: true,
+    },
 });
 const Folder=mongoose.model("Folder",folderSchema);
 module.exports=Folder;

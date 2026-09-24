@@ -2,7 +2,7 @@ const Folder = require("../models/folder");
 
 const showingAllFolder = async (req, res) => {
   try {
-    const allFolders = await Folder.find({});
+    const allFolders = await Folder.find({owner: req.userId});
 
     res.status(200).json({
       message: "Folder Loaded",

@@ -15,7 +15,10 @@ export default function HomePage(){
         console.log("Deleting folder:", id);
         try{
             const response = await axios.delete(
-                `${import.meta.env.VITE_API_URL}/folder/${id}`
+                `${import.meta.env.VITE_API_URL}/folder/${id}`,
+                {
+                    withCredentials:true,
+                },
             );
             console.log(response.data.message);
             fetchFolder();
@@ -26,7 +29,10 @@ export default function HomePage(){
     const fetchFolder = async () => {
         try{
             const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/folder`
+                `${import.meta.env.VITE_API_URL}/folder`,
+                {
+                    withCredentials:true,
+                },
             )
             console.log(response.data.data);
             setAllFolder(response.data.data);
@@ -43,6 +49,9 @@ export default function HomePage(){
             const response = await axios.post(
                 `${import.meta.env.VITE_API_URL}/createFolder`,
                 createFolder,
+                {
+                    withCredentials:true,
+                },
             );
             setCreateFolder({name:""});
             console.log(response.data.message);
@@ -58,6 +67,9 @@ export default function HomePage(){
         try{
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}/folder/${id}`,
+                {
+                    withCredentials:true,
+                },
             );
             navigate(`/folder/${id}`);
         }catch(error){
@@ -68,6 +80,9 @@ export default function HomePage(){
         try{
             const response = await axios.get(
                 `${import.meta.env.VITE_API_URL}/folder/${id}`,
+                {
+                    withCredentials:true,
+                },
             );
             setFolderNewName(response.data.folder.folderName);
             setRenameId(id);
@@ -84,7 +99,10 @@ export default function HomePage(){
                 `${import.meta.env.VITE_API_URL}/folder/${renameId}`,
                 {
                     folderName:folderNewName,
-                }
+                },
+                {
+                    withCredentials:true,
+                },
             );
             setShowRename(false);
             fetchFolder();

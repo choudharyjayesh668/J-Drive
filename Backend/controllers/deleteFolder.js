@@ -6,6 +6,7 @@ const deleteFolder = async (req, res) => {
     // console.log(id);
     await Folder.deleteOne({
       _id: id,
+      owner: req.userId,
     });
     res.status(200).json({
       message: "Folder deleted successfully",

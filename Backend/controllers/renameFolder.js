@@ -4,7 +4,7 @@ const renameFolder = async (req,res)=>{
     try{
     const {id} = req.params;
     const {folderName} = req.body;
-    const foundFolder = await Folder.findOne({_id: id});
+    const foundFolder = await Folder.findOne({_id: id,owner: req.userId});
     if (!foundFolder) {
       return res.status(404).json({
         message: "Folder not found",
