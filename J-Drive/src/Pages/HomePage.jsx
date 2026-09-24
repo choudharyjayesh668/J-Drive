@@ -1,13 +1,25 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 export default function HomePage(){
     const [createFolder,setCreateFolder] = useState({ name : "" });
-    const fetchFolder = () => {
-
-    }
+    const [allfolder,setAllFolder] = useState([]);
     const handleOnChange = (event) =>{
         setCreateFolder({[event.target.name]:event.target.value})
     }
+    const fetchFolder = async () => {
+        try{
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/folder`
+            )
+            console.log(response.data.data);
+            setAllFolder(response.data.data);
+        }catch(error){
+
+        }
+    }
+    useEffect(()=>{
+        fetchFolder();
+    },[]);
     const handleCreateFolder = async (event) => {
         event.preventDefault();
         try{
@@ -35,6 +47,13 @@ export default function HomePage(){
                 />
                 <button type="Submit">Create +</button>
             </form>
+            <div>
+                {allfolder.map((folder)=>(
+                    <div key={folder._id}>
+                        <h3>{folder.folderName}</h3>
+                    </div>
+                ))}
+            </div>
         </>
     );
 };
