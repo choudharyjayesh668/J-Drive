@@ -49,7 +49,22 @@ const uploadFile = async (req, res) => {
     });
   }
 };
-
+const getFiles = async (req, res) => {
+  const { folderId } = req.params;
+  try {
+    const files = await File.find({owner: req.userId,folder: folderId,});
+    res.status(200).json({
+      message: "Data Received",
+      data: files,
+    });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to fetch files",
+    });
+  }
+};
 module.exports = {
   uploadFile,
+  getFiles,
 };

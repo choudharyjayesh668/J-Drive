@@ -7,6 +7,7 @@ export default function Folder(){
     const navigate = useNavigate();
     const [folderInfo,setFolderInfo] = useState();
     const [selectedFiles,setSelectedFiles] = useState([]);
+    const [files,setFiles] = useState([])
     const { id } = useParams();
     const handleFileChange = (event) => {
         setSelectedFile(event.target.file[0]);
@@ -24,7 +25,25 @@ export default function Folder(){
             );
             setFolderInfo(response.data.folder.folderName);
         }catch(error){
-            console.log(`Failed to load FolderInfo ${error}`)
+            console.log(`Failed to load FolderInfo ${error}`),
+            {
+                withCredentials: true,
+            }
+            console.log(response);
+            setFiles(response.data);
+        };
+    };
+    const fetchFiles = async () => {
+        try{
+            const response = await axios.get(
+                `${import.meta.env.VITE_API_URL}/folder/${id}/files`,
+                {
+                    withCredentials: true,
+                }
+            );
+            setFiles(response.data.data);
+        }catch(error){
+            console.log(error);
         }
     }
     const handleUpload = async (event) => {
@@ -49,6 +68,7 @@ export default function Folder(){
     };
     useEffect(()=>{
         fetchFolderInfo();
+        fetchFiles();
     },[id]);
     return(
         <>
@@ -68,6 +88,13 @@ export default function Folder(){
                 />
                 <button type="submit">Upload</button>
             </form>
+            {
+                files.map((file)=>(
+                    <div key = {file._id}>
+                        <h2>{file.fileName}</h2>
+                    </div>
+                ))
+            }
         </>
     )
 }
