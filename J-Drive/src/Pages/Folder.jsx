@@ -66,6 +66,20 @@ export default function Folder(){
         console.log("Upload failed:", error);
     }
     };
+    const handleDelete = async (fileId) => {
+        try{
+            const response = await axios.delete(
+                `${import.meta.env.VITE_API_URL}/file/${fileId}`,
+                {
+                    withCredentials: true,
+                }
+            );
+            console.log(response.data);
+            fetchFiles();
+        }catch(error){
+            console.log(error);
+        }
+    }
     useEffect(()=>{
         fetchFolderInfo();
         fetchFiles();
@@ -92,6 +106,7 @@ export default function Folder(){
                 files.map((file)=>(
                     <div key = {file._id}>
                         <h2>{file.fileName}</h2>
+                        <button onClick={()=>handleDelete(file._id)}>Delete -</button>
                     </div>
                 ))
             }

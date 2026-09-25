@@ -35,9 +35,6 @@ const uploadFile = async (req, res) => {
         folder: folderId,
       });
       await newFile.save();
-      console.log(
-        `${file.originalname} -> Telegram -> MongoDB`
-      );
     }
     return res.status(201).json({
       message: "All files uploaded successfully",
@@ -64,7 +61,38 @@ const getFiles = async (req, res) => {
     });
   }
 };
+const deleteFile = async (req, res) => {
+  try {
+    const { fileId } = req.params;
+    const file = await File.findOne({
+      _id: fileId,
+      owner: req.userId,
+    });
+    if (!file) {
+      return res.status(404).json({
+        message: "File not found",
+      });
+    }
+    await axios.post(
+      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/deleteMessage`,
+      {
+        chat_id: process.env.TELEGRAM_CHANNEL_ID,
+        message_id: file.messageId,
+      }
+    );
+    await file.deleteOne();
+    return res.status(200).json({
+      message: "File deleted successfully",
+    });
+  } catch (error) {
+    console.error("DELETE FILE ERROR:", error);
+    return res.status(500).json({
+      message: "Failed to delete file",
+    });
+  }
+};
 module.exports = {
   uploadFile,
   getFiles,
+  deleteFile,
 };
