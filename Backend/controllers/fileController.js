@@ -1,0 +1,55 @@
+const File = require("../models/files");
+const fs = require("fs");
+const FormDataPackage = require("form-data");
+const axios = require("axios");
+
+const uploadFile = async (req, res) => {
+  const { folderId } = req.params;
+  try {
+    for (const file of req.files) {
+      const fileBuffer = fs.readFileSync(file.path);
+      const formData = new FormDataPackage();
+      formData.append("document", fileBuffer, {
+        filename: file.originalname,
+        contentType: file.mimetype,
+      });
+      formData.append(
+        "chat_id",
+        process.env.TELEGRAM_CHANNEL_ID
+      );
+      const response = await axios.post(
+        `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendDocument`,
+        formData,
+        {
+          headers: formData.getHeaders(),
+        }
+      );
+      const telegramFileId =
+        response.data.result.document?.file_id;
+      const newFile = new File({
+        fileName: file.originalname,
+        telegramFileId: telegramFileId,
+        messageId: String(response.data.result.message_id),
+        mimeType: file.mimetype,
+        owner: req.userId,
+        folder: folderId,
+      });
+      await newFile.save();
+      console.log(
+        `${file.originalname} -> Telegram -> MongoDB`
+      );
+    }
+    return res.status(201).json({
+      message: "All files uploaded successfully",
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({
+      message: "Upload failed",
+    });
+  }
+};
+
+module.exports = {
+  uploadFile,
+};

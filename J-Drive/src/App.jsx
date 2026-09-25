@@ -14,7 +14,7 @@ function App() {
           <Route path="/signup"element={<Signup/>} />
           <Route path="/login"element={<Login/>} />
           <Route path="/homepage"element={<ProtectedRoute><HomePage/></ProtectedRoute>} />
-          <Route path="/folder/:id"element={<Folder/>} />
+          <Route path="/folder/:id"element={<ProtectedRoute><Folder/></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
     </>

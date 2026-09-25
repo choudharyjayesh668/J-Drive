@@ -3,7 +3,6 @@ const Folder = require("../models/folder");
 const openFolder = async (req, res) => {
   try {
     const { id } = req.params;
-    // console.log(id);
     const folder = await Folder.findOne({_id: id,owner: req.userId});
     if (!folder) {
       return res.status(404).json({
