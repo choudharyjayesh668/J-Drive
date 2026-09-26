@@ -123,6 +123,7 @@ const viewFile = async (req, res) => {
     });
     if (!file) {
       return res.status(404).json({
+        success: false,
         message: "File not found",
       });
     }
@@ -162,8 +163,9 @@ const viewFile = async (req, res) => {
     telegramResponse.data.pipe(res);
   } catch (error) {
     console.error("Preview failed:", error);
-    res.status(500).json({
-      message: "Failed to preview file",
+    return res.status(500).json({
+      success: false,
+      message: "Failed to preview file. Please try again.",
     });
   }
 };
@@ -176,6 +178,7 @@ const downloadFile = async (req, res) => {
     });
     if (!file) {
       return res.status(404).json({
+        success: false,
         message: "File not found",
       });
     }
@@ -205,8 +208,9 @@ const downloadFile = async (req, res) => {
     telegramResponse.data.pipe(res);
   } catch (error) {
     console.error("Download failed:", error);
-    res.status(500).json({
-      message: "Failed to download file",
+    return res.status(500).json({
+      success: false,
+      message: "Failed to download file. Please try again.",
     });
   }
 };

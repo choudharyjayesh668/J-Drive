@@ -30,9 +30,6 @@ export default function Folder(){
       });
     }, 3000);
   };
-    // const handleFileChange = (event) => {
-    //     setSelectedFile(event.target.file[0]);
-    // }
     const handleHomepage = () => {
         navigate(`/homepage`)
     }
@@ -131,9 +128,11 @@ export default function Folder(){
         }
         );
 
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement("a");
+        const url = window.URL.createObjectURL(
+        new Blob([response.data])
+        );
 
+        const link = document.createElement("a");
         link.href = url;
         link.download = file.fileName;
 
@@ -142,9 +141,16 @@ export default function Folder(){
 
         link.remove();
         window.URL.revokeObjectURL(url);
-    } catch (err) {
-        console.error(err);
-        alert("Download failed");
+
+        showPopup("File downloaded successfully", "success");
+
+    } catch (error) {
+        console.error("Download file error:", error);
+
+        showPopup(
+        error.response?.data?.message || "Failed to download file",
+        "error"
+        );
     }
     };
     useEffect(()=>{
@@ -153,6 +159,11 @@ export default function Folder(){
     },[id]);
     return(
         <>
+            {popup.show && (
+            <div className={`popup ${popup.type}`}>
+                {popup.message}
+            </div>
+            )}
             <h1>Folder</h1>
             <button onClick={handleHomepage}>Homepage</button>
             { folderInfo && (
@@ -167,6 +178,18 @@ export default function Folder(){
                 multiple
                 onChange={(e) => setSelectedFiles([...e.target.files])}
                 />
+                {selectedFiles.length > 0 && (
+                <div>
+                    <h3>Selected Files</h3>
+
+                    {selectedFiles.map((file, index) => (
+                    <div key={index}>
+                        <span>{file.name}</span>
+                        <span> — {(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                    </div>
+                    ))}
+                </div>
+                )}
                 <button type="submit">Upload</button>
             </form>
             {files.length === 0 ? (
@@ -183,24 +206,22 @@ export default function Folder(){
                 )
             }
             {viewFile && (
-                <div className="modal-overlay">
-                    <div className="modal">
+            <div className="modal-overlay">
+                <div className="modal">
+                <button onClick={() => setViewFile(null)}>
+                    ✕
+                </button>
 
-                    <button onClick={() => setViewFile(null)}>
-                        ✕
-                    </button>
+                <h3>{viewFile.fileName}</h3>
 
-                    <h3>{viewFile.fileName}</h3>
-
-                    <iframe
-                        src={`${import.meta.env.VITE_API_URL}/files/${viewFile._id}/view`}
-                        width="100%"
-                        height="500px"
-                    />
-
-                    </div>
+                <iframe
+                    src={`${import.meta.env.VITE_API_URL}/files/${viewFile._id}/view`}
+                    width="100%"
+                    height="500px"
+                />
                 </div>
-                )}
+            </div>
+            )}
         </>
     )
 }
