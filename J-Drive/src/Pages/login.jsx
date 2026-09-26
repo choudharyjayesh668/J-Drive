@@ -5,15 +5,56 @@ import { useNavigate } from "react-router-dom";
 export default function Login(){
     const navigate = useNavigate();
     const [userdata,setUserData]=useState({email:"",password:""});
-    
-    const handleOnChange=(event)=>{
-        setUserData((curruserdata)=>{
-            return{...curruserdata,[event.target.name]:event.target.value};
-        });
+    const [error,setError] = useState(
+        {
+            email:"",
+            password:"",
+        },
+    );
+        const validationForm = () => {
+    const {
+        email,
+        password,
+    } = userdata;
+
+    const newError = {
+        email: "",
+        password: "",
+        server: "",
+    };
+
+    if (!email.trim()) {
+        newError.email = "Enter Email";
+    }
+
+    if (!password) {
+        newError.password = "Enter Password";
+    }
+
+    setError(newError);
+
+    return !Object.values(newError).some(
+        (message) => message !== ""
+        );
+    };
+    const handleOnChange = (event) => {
+        const { name, value } = event.target;
+        setUserData((curruserdata) => ({
+            ...curruserdata,
+            [name]: value,
+        }));
+        setError((prev) => ({
+            ...prev,
+            [name]: "",
+            server: "",
+        }));
     };
     const handleOnSubmit=async(event)=>{
         event.preventDefault();
-        const response = await axios.post(
+        const isValid = validationForm();
+        if(!isValid) return;
+        try{
+            const response = await axios.post(
             `${import.meta.env.VITE_API_URL}/login`,
             userdata,
             {
@@ -22,6 +63,14 @@ export default function Login(){
         )
         console.log(response.data);
         navigate("/homepage");
+        }catch(error){
+            const message = error.response?.data?.message;
+            console.log(message);
+            setError((prev) => ({
+                ...prev,
+                email: message || "Something went wrong",
+            }));
+        }
     }
     return(
         <>
@@ -34,12 +83,14 @@ export default function Login(){
                 onChange={handleOnChange}
                 name="email"
                 />
+                {error.email && <p className="error">{error.email}</p>}
                 <input type="password"
                 placeholder="Enter Password"
                 value={userdata.password}
                 onChange={handleOnChange}
                 name="password"
                 />
+                {error.password && <p className="error">{error.password}</p>}
                 <button type="submit">Submit</button>
                 </form>
             </div>

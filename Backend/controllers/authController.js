@@ -7,16 +7,19 @@ const signup = async (req, res) => {
         let { email, password, username } = req.body;
         if (!username || !username.trim()) {
             return res.status(400).json({
+                success:false,
                 message: "Username is Required",
             });
         }
         if (!email || !email.trim()) {
             return res.status(400).json({
+                success:false,
                 message: "Email is Required",
             });
         }
         if (!password) {
             return res.status(400).json({
+                success:false,
                 message: "Password is Required",
             });
         }
@@ -25,6 +28,7 @@ const signup = async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (existingUser) {
             return res.status(409).json({
+                success:false,
                 message: "User Already Exists",
             });
         }
@@ -36,11 +40,13 @@ const signup = async (req, res) => {
         });
         await newUser.save();
         return res.status(201).json({
+            success:true,
             message: "User Created Successfully",
         });
     } catch (err) {
         console.error(err);
         return res.status(500).json({
+            success:false,
             message: "Internal Server Error",
         });
     }
@@ -53,7 +59,8 @@ const login = async (req, res) => {
         const existingUser = await User.findOne({ email });
         if (!existingUser) {
             return res.status(401).json({
-                message: "Invalid Email or Password",
+                success:false,
+                message: "Invalid Email",
             });
         }
         const passwordMatch = await bcrypt.compare(
@@ -62,6 +69,7 @@ const login = async (req, res) => {
         );
         if (!passwordMatch) {
             return res.status(401).json({
+                success:false,
                 message: "Invalid Email or Password",
             });
         }
@@ -77,11 +85,13 @@ const login = async (req, res) => {
             maxAge: 24 * 60 * 60 * 1000,
         });
         return res.status(200).json({
+            success:true,
             message: "Access Granted",
         });
     } catch (err) {
         console.error("LOGIN ERROR:", err);
         return res.status(500).json({
+            success:false,
             message: "Internal Server Error",
         });
     }
