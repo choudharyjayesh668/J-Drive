@@ -104,40 +104,79 @@ export default function HomePage(){
             console.log(`Folder Opened Failed ${error}`);
         }
     }
-    const handleRename = async (id) =>{
-        try{
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/folder/${id}`,
-                {
-                    withCredentials:true,
-                },
-            );
-            setFolderNewName(response.data.folder.folderName);
-            setRenameId(id);
-            setShowRename(true);
-        }catch(error){
-            console.log(error);
+    const handleRename = async (id) => {
+    try {
+        const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/folder/${id}`,
+        {
+            withCredentials: true,
         }
+        );
+        setFolderNewName(response.data.folder.folderName);
+        setRenameId(id);
+        setShowRename(true);
+    } catch (error) {
+        console.error("Load folder error:", error);
+        setPopup({
+        show: true,
+        message:
+            error.response?.data?.message ||
+            "Failed to load folder",
+        type: "error",
+        });
+        setTimeout(() => {
+        setPopup({
+            show: false,
+            message: "",
+            type: "",
+        });
+        }, 3000);
     }
-    const handleRenameSubmit = async (event) =>{
-        event.preventDefault();
-        try{
-            console.log(folderNewName);
-            const response = await axios.put(
-                `${import.meta.env.VITE_API_URL}/folder/${renameId}`,
-                {
-                    folderName:folderNewName,
-                },
-                {
-                    withCredentials:true,
-                },
-            );
-            setShowRename(false);
-            fetchFolder();
-        }catch(error){
-            conbsole.log(error);
+    };
+    const handleRenameSubmit = async (event) => {
+    event.preventDefault();
+    try {
+        const response = await axios.put(
+        `${import.meta.env.VITE_API_URL}/folder/${renameId}`,
+        {
+            folderName: folderNewName,
+        },
+        {
+            withCredentials: true,
         }
+        );
+        setShowRename(false);
+        fetchFolder();
+        setPopup({
+        show: true,
+        message: response.data.message,
+        type: "success",
+        });
+        setTimeout(() => {
+        setPopup({
+            show: false,
+            message: "",
+            type: "",
+        });
+        }, 3000);
+    } catch (error) {
+        console.error("Rename folder error:", error);
+        setPopup({
+        show: true,
+        message:
+            error.response?.data?.message ||
+            "Failed to rename folder",
+        type: "error",
+        });
+        setTimeout(() => {
+        setPopup({
+            show: false,
+            message: "",
+            type: "",
+        });
+        }, 3000);
     }
+    };
     const handleLogout = async () => {
     try {
         await axios.post(
