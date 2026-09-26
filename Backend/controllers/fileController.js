@@ -2,6 +2,7 @@ const File = require("../models/files");
 const fs = require("fs");
 const FormDataPackage = require("form-data");
 const axios = require("axios");
+const path = require("path");
 
 const uploadFile = async (req, res) => {
   const { folderId } = req.params;
@@ -91,8 +92,106 @@ const deleteFile = async (req, res) => {
     });
   }
 };
+const viewFile = async (req, res) => {
+  try {
+    const { fileId } = req.params;
+    const file = await File.findOne({
+      _id: fileId,
+      owner: req.userId,
+    });
+    if (!file) {
+      return res.status(404).json({
+        message: "File not found",
+      });
+    }
+    const response = await axios.get(
+      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getFile`,
+      {
+        params: {
+          file_id: file.telegramFileId,
+        },
+      }
+    );
+    const filePath = response.data.result.file_path;
+    const telegramUrl =
+      `https://api.telegram.org/file/bot${process.env.TELEGRAM_BOT_TOKEN}/${filePath}`;
+    const telegramResponse = await axios.get(telegramUrl, {
+      responseType: "stream",
+    });
+    const ext = path.extname(file.fileName).toLowerCase();
+    const mimeTypes = {
+      ".pdf": "application/pdf",
+      ".jpg": "image/jpeg",
+      ".jpeg": "image/jpeg",
+      ".png": "image/png",
+      ".gif": "image/gif",
+      ".mp4": "video/mp4",
+      ".webm": "video/webm",
+      ".mp3": "audio/mpeg",
+    };
+    res.setHeader(
+      "Content-Type",
+      mimeTypes[ext] || "application/octet-stream"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `inline; filename="${file.fileName}"`
+    );
+    telegramResponse.data.pipe(res);
+  } catch (error) {
+    console.error("Preview failed:", error);
+    res.status(500).json({
+      message: "Failed to preview file",
+    });
+  }
+};
+const downloadFile = async (req, res) => {
+  try {
+    const { fileId } = req.params;
+    const file = await File.findOne({
+      _id: fileId,
+      owner: req.userId,
+    });
+    if (!file) {
+      return res.status(404).json({
+        message: "File not found",
+      });
+    }
+    const response = await axios.get(
+      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getFile`,
+      {
+        params: {
+          file_id: file.telegramFileId,
+        },
+      }
+    );
+    const filePath = response.data.result.file_path;
+    const telegramUrl =
+      `https://api.telegram.org/file/bot${process.env.TELEGRAM_BOT_TOKEN}/${filePath}`;
+    const telegramResponse = await axios.get(telegramUrl, {
+      responseType: "stream",
+    });
+    res.setHeader(
+      "Content-Type",
+      telegramResponse.headers["content-type"] ||
+        "application/octet-stream"
+    );
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename="${file.fileName}"`
+    );
+    telegramResponse.data.pipe(res);
+  } catch (error) {
+    console.error("Download failed:", error);
+    res.status(500).json({
+      message: "Failed to download file",
+    });
+  }
+};
 module.exports = {
   uploadFile,
   getFiles,
   deleteFile,
+  viewFile,
+  downloadFile,
 };

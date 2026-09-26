@@ -7,6 +7,7 @@ export default function Folder(){
     const navigate = useNavigate();
     const [folderInfo,setFolderInfo] = useState();
     const [selectedFiles,setSelectedFiles] = useState([]);
+    const [viewFile, setViewFile] = useState(null);
     const [files,setFiles] = useState([])
     const { id } = useParams();
     const handleFileChange = (event) => {
@@ -81,6 +82,32 @@ export default function Folder(){
             console.log(error);
         }
     }
+    const handleDownload = async (file) => {
+    try {
+        const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/files/${file._id}/download`,
+        {
+            responseType: "blob",
+            withCredentials: true,
+        }
+        );
+
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement("a");
+
+        link.href = url;
+        link.download = file.fileName;
+
+        document.body.appendChild(link);
+        link.click();
+
+        link.remove();
+        window.URL.revokeObjectURL(url);
+    } catch (err) {
+        console.error(err);
+        alert("Download failed");
+    }
+    };
     useEffect(()=>{
         fetchFolderInfo();
         fetchFiles();
@@ -108,9 +135,30 @@ export default function Folder(){
                     <div key = {file._id}>
                         <h2>{file.fileName}</h2>
                         <button onClick={()=>handleDelete(file._id)}>Delete -</button>
+                        <button type="button"className="file-action-btn file-btn-download"onClick={() => handleDownload(file)}>Download</button>
+                        <div onClick={() => setViewFile(file)}>  {file.fileName} </div>
                     </div>
                 ))
             }
+            {viewFile && (
+                <div className="modal-overlay">
+                    <div className="modal">
+
+                    <button onClick={() => setViewFile(null)}>
+                        ✕
+                    </button>
+
+                    <h3>{viewFile.fileName}</h3>
+
+                    <iframe
+                        src={`${import.meta.env.VITE_API_URL}/files/${viewFile._id}/view`}
+                        width="100%"
+                        height="500px"
+                    />
+
+                    </div>
+                </div>
+                )}
         </>
     )
 }
