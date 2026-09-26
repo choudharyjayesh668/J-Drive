@@ -7,6 +7,18 @@ const path = require("path");
 const uploadFile = async (req, res) => {
   const { folderId } = req.params;
   try {
+    if (!folderId) {
+      return res.status(400).json({
+        success: false,
+        message: "Folder ID is required",
+      });
+    }
+    if (!req.files || req.files.length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: "No files selected",
+      });
+    }
     for (const file of req.files) {
       const fileBuffer = fs.readFileSync(file.path);
       const formData = new FormDataPackage();
@@ -38,12 +50,14 @@ const uploadFile = async (req, res) => {
       await newFile.save();
     }
     return res.status(201).json({
+      success: true,
       message: "All files uploaded successfully",
     });
-  } catch (err) {
-    console.error(err);
+  } catch (error) {
+    console.error("Upload file error:", error);
     return res.status(500).json({
-      message: "Upload failed",
+      success: false,
+      message: "Upload failed. Please try again.",
     });
   }
 };

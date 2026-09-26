@@ -30,9 +30,9 @@ export default function Folder(){
       });
     }, 3000);
   };
-    const handleFileChange = (event) => {
-        setSelectedFile(event.target.file[0]);
-    }
+    // const handleFileChange = (event) => {
+    //     setSelectedFile(event.target.file[0]);
+    // }
     const handleHomepage = () => {
         navigate(`/homepage`)
     }
@@ -72,12 +72,15 @@ export default function Folder(){
     }
     };
     const handleUpload = async (event) => {
-        event.preventDefault();
-        if (!selectedFiles) return;
-        const formData = new FormData();
-        selectedFiles.forEach((file) => {
-            formData.append("files", file);
-        });
+    event.preventDefault();
+    if (!selectedFiles || selectedFiles.length === 0) {
+        showPopup("Please select at least one file", "error");
+        return;
+    }
+    const formData = new FormData();
+    selectedFiles.forEach((file) => {
+        formData.append("files", file);
+    });
     try {
         const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/uploadFile/${id}`,
@@ -86,10 +89,14 @@ export default function Folder(){
             withCredentials: true,
         }
         );
-        console.log(response.data);
         fetchFiles();
-    }catch (error) {
-        console.log("Upload failed:", error);
+        showPopup(response.data.message, "success");
+    } catch (error) {
+        console.error("Upload failed:", error);
+        showPopup(
+        error.response?.data?.message || "Upload failed",
+        "error"
+        );
     }
     };
     const handleDelete = async (fileId) => {
