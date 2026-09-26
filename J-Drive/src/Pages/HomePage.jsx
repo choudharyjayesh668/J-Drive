@@ -26,7 +26,7 @@ export default function HomePage(){
         message: "",
         type: "",
       });
-    }, 5000);
+    }, 3000);
   };
     const handleOnChange = (event) =>{
         setCreateFolder({[event.target.name]:event.target.value})

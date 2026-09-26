@@ -50,15 +50,20 @@ const uploadFile = async (req, res) => {
 const getFiles = async (req, res) => {
   const { folderId } = req.params;
   try {
-    const files = await File.find({owner: req.userId,folder: folderId,});
-    res.status(200).json({
-      message: "Data Received",
+    const files = await File.find({
+      owner: req.userId,
+      folder: folderId,
+    });
+    return res.status(200).json({
+      success: true,
+      message: "Files Loaded",
       data: files,
     });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({
-      message: "Failed to fetch files",
+    console.error("Fetch files error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Failed to fetch files. Please try again.",
     });
   }
 };

@@ -10,6 +10,26 @@ export default function Folder(){
     const [viewFile, setViewFile] = useState(null);
     const [files,setFiles] = useState([])
     const { id } = useParams();
+    const [popup,setPopup] = useState({
+        show:false,
+        message:"",
+        type:"",
+    });
+    const showPopup = (message, type) => {
+    setPopup({
+      show: true,
+      message,
+      type,
+    });
+
+    setTimeout(() => {
+      setPopup({
+        show: false,
+        message: "",
+        type: "",
+      });
+    }, 3000);
+  };
     const handleFileChange = (event) => {
         setSelectedFile(event.target.file[0]);
     }
@@ -35,18 +55,22 @@ export default function Folder(){
         };
     };
     const fetchFiles = async () => {
-        try{
-            const response = await axios.get(
-                `${import.meta.env.VITE_API_URL}/folder/${id}/files`,
-                {
-                    withCredentials: true,
-                }
-            );
-            setFiles(response.data.data);
-        }catch(error){
-            console.log(error);
+    try {
+        const response = await axios.get(
+        `${import.meta.env.VITE_API_URL}/folder/${id}/files`,
+        {
+            withCredentials: true,
         }
+        );
+        setFiles(response.data.data);
+    } catch (error) {
+        console.error("Fetch files error:", error);
+        showPopup(
+        error.response?.data?.message || "Failed to fetch files",
+        "error"
+        );
     }
+    };
     const handleUpload = async (event) => {
         event.preventDefault();
         if (!selectedFiles) return;
@@ -130,15 +154,18 @@ export default function Folder(){
                 />
                 <button type="submit">Upload</button>
             </form>
-            {
-                files.map((file)=>(
-                    <div key = {file._id}>
-                        <h2>{file.fileName}</h2>
-                        <button onClick={()=>handleDelete(file._id)}>Delete -</button>
-                        <button type="button"className="file-action-btn file-btn-download"onClick={() => handleDownload(file)}>Download</button>
-                        <div onClick={() => setViewFile(file)}>  {file.fileName} </div>
-                    </div>
-                ))
+            {files.length === 0 ? (
+                <p>No files in this folder yet.</p>
+                ) : (
+                    files.map((file)=>(
+                        <div key = {file._id}>
+                            <h2>{file.fileName}</h2>
+                            <button onClick={()=>handleDelete(file._id)}>Delete -</button>
+                            <button type="button"className="file-action-btn file-btn-download"onClick={() => handleDownload(file)}>Download</button>
+                            <div onClick={() => setViewFile(file)}>  {file.fileName} </div>
+                        </div>
+                    ))
+                )
             }
             {viewFile && (
                 <div className="modal-overlay">
