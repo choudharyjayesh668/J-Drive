@@ -90,6 +90,7 @@ const deleteFile = async (req, res) => {
     });
     if (!file) {
       return res.status(404).json({
+        success: false,
         message: "File not found",
       });
     }
@@ -102,12 +103,14 @@ const deleteFile = async (req, res) => {
     );
     await file.deleteOne();
     return res.status(200).json({
+      success: true,
       message: "File deleted successfully",
     });
   } catch (error) {
-    console.error("DELETE FILE ERROR:", error);
+    console.error("Delete file error:", error);
     return res.status(500).json({
-      message: "Failed to delete file",
+      success: false,
+      message: "Failed to delete file. Please try again.",
     });
   }
 };

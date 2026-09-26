@@ -100,19 +100,27 @@ export default function Folder(){
     }
     };
     const handleDelete = async (fileId) => {
-        try{
-            const response = await axios.delete(
-                `${import.meta.env.VITE_API_URL}/file/${fileId}`,
-                {
-                    withCredentials: true,
-                }
-            );
-            console.log(response.data);
-            fetchFiles();
-        }catch(error){
-            console.log(error);
+    try {
+        const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/file/${fileId}`,
+        {
+            withCredentials: true,
         }
+        );
+
+        fetchFiles();
+
+        showPopup(response.data.message, "success");
+
+    } catch (error) {
+        console.error("Delete file error:", error);
+
+        showPopup(
+        error.response?.data?.message || "Failed to delete file",
+        "error"
+        );
     }
+    };
     const handleDownload = async (file) => {
     try {
         const response = await axios.get(
