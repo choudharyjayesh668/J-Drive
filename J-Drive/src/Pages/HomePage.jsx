@@ -8,6 +8,11 @@ export default function HomePage(){
     const [folderNewName,setFolderNewName] = useState("");
     const [showRename,setShowRename] = useState(false);
     const [renameId,setRenameId] = useState(null);
+    const [popup,setPopup] = useState({
+        show:false,
+        message:"",
+        type:"",
+    });
     const handleOnChange = (event) =>{
         setCreateFolder({[event.target.name]:event.target.value})
     }
@@ -34,7 +39,6 @@ export default function HomePage(){
                     withCredentials:true,
                 },
             )
-            console.log(response.data.data);
             setAllFolder(response.data.data);
         }catch(error){
 
@@ -55,11 +59,35 @@ export default function HomePage(){
             );
             setCreateFolder({name:""});
             console.log(response.data.message);
-            console.log(response.data.folder);
+            setPopup({
+                show:true,
+                message:response.data.message,
+                type:"success",
+            });
             fetchFolder();
+            setTimeout(()=>{
+                setPopup({
+                    show: false,
+                    message: "",
+                    type: "",
+                })
+            },3000);
         }catch(error){
             console.error("Create folder error:", error);
-            alert(error.response?.data?.message || "Failed to create folder");
+            setPopup({
+            show: true,
+            message:
+                error.response?.data?.message ||
+                "Failed to create folder",
+            type: "error",
+            });
+            setTimeout(() => {
+            setPopup({
+                show: false,
+                message: "",
+                type: "",
+            });
+            }, 5000);
         }
     };
     const handleOpenFolder = async (id) => {
@@ -160,9 +188,14 @@ export default function HomePage(){
                             <button type="submit">Apply Changes</button>
                             <button type="button" onClick={()=>setShowRename(false)}>Cancle</button>
                         </form>
-                    </div>
+                    </div>  
                 )
             }
+            {popup.show && (
+            <div className={`popup ${popup.type}`}>
+                {popup.message}
+            </div>
+            )}
         </>
     );
 };
