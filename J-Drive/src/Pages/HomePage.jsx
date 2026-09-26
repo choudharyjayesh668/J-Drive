@@ -13,6 +13,21 @@ export default function HomePage(){
         message:"",
         type:"",
     });
+    const showPopup = (message, type) => {
+    setPopup({
+      show: true,
+      message,
+      type,
+    });
+
+    setTimeout(() => {
+      setPopup({
+        show: false,
+        message: "",
+        type: "",
+      });
+    }, 5000);
+  };
     const handleOnChange = (event) =>{
         setCreateFolder({[event.target.name]:event.target.value})
     }
@@ -27,8 +42,13 @@ export default function HomePage(){
             );
             console.log(response.data.message);
             fetchFolder();
+            showPopup(response.data.message, "success");
         }catch(error){
-            console.log(`Delete Failed ${error}`);
+            console.error("Delete folder error:", error);
+            showPopup(
+            error.response?.data?.message || "Failed to delete folder",
+            "error"
+            );
         }
     }
     const fetchFolder = async () => {

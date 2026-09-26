@@ -12,6 +12,12 @@ const deleteFolder = async (req, res) => {
       owner: req.userId,
       folder: id, 
     });
+    if (!folder) {
+      return res.status(404).json({
+        success: false,
+        message: "Folder not found",
+      });
+    }
     for (const file of files) {
         try {
             await axios.post(
@@ -36,10 +42,13 @@ const deleteFolder = async (req, res) => {
       _id: id,
     });
     res.status(200).json({
+      success: true,
       message: "Folder deleted successfully",
     });
   } catch (error) {
+    console.log("Delete folder error:", error);
     res.status(500).json({
+      success: false,
       message: `Failed To Delete ${error.message}`,
     });
   }
