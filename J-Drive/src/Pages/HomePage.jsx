@@ -111,9 +111,8 @@ export default function HomePage(){
         }
     };
     const handleOpenFolder = async (id) => {
-        console.log("Double Clicked");
         try{
-            const response = await axios.get(
+            await axios.get(
                 `${import.meta.env.VITE_API_URL}/folder/${id}`,
                 {
                     withCredentials:true,
@@ -122,6 +121,10 @@ export default function HomePage(){
             navigate(`/folder/${id}`);
         }catch(error){
             console.log(`Folder Opened Failed ${error}`);
+            showPopup(
+                error.response?.data?.message || "Failed to open folder",
+                "error"
+            );
         }
     }
     const handleRename = async (id) => {
