@@ -62,6 +62,7 @@ export default function Folder(){
         }
         );
         console.log(response.data);
+        fetchFiles();
     }catch (error) {
         console.log("Upload failed:", error);
     }
