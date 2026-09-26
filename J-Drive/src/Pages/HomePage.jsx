@@ -41,7 +41,7 @@ export default function HomePage(){
             )
             setAllFolder(response.data.data);
         }catch(error){
-
+            console.error("Fetch folder error:", error);
         }
     }
     useEffect(()=>{
@@ -167,13 +167,25 @@ export default function HomePage(){
                 <button type="Submit">Create +</button>
             </form>
             <div>
-                {allfolder.map((folder)=>(
-                    <div key={folder._id} >
-                        <h3 onDoubleClick={()=>handleOpenFolder(folder._id)}>{folder.folderName}</h3>
-                        <button onClick={()=>handleRename(folder._id)}>Rename </button>
-                        <button onClick={()=>handleDelete(folder._id)}>Delete -</button>
-                    </div>
-                ))}
+                {allfolder.length === 0 ? (
+                    <p>No folders yet. Create your first folder.</p>
+                    ) : (
+                    allfolder.map((folder) => (
+                        <div key={folder._id}>
+                        <h3 onDoubleClick={() => handleOpenFolder(folder._id)}>
+                            {folder.folderName}
+                        </h3>
+
+                        <button onClick={() => handleRename(folder._id)}>
+                            Rename
+                        </button>
+
+                        <button onClick={() => handleDelete(folder._id)}>
+                            Delete
+                        </button>
+                        </div>
+                    ))
+                    )}
             </div>
             {
                 showRename && (
