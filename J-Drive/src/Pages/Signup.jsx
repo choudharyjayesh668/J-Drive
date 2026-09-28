@@ -1,6 +1,6 @@
 import { useState } from "react"
 import axios from "axios";
-
+import Navbar from "../Component/Navbar";
 import { useNavigate } from "react-router-dom";
 export default function Signup(){
     const navigate = useNavigate();
@@ -101,6 +101,7 @@ export default function Signup(){
     }
     return(
         <>
+        <Navbar/>
             <div className="signup">
                 <h1>Welcome To SignUp</h1>
                 <form onSubmit={handleOnSubmit}>

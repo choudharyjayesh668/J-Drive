@@ -2,13 +2,16 @@ import axios from "axios";
 import { useState , useEffect } from "react";
 import { useNavigate } from "react-router-dom"
 import { useParams } from "react-router-dom";
-
+import Navbar from "../Component/Navbar";
 export default function Folder(){
     const navigate = useNavigate();
     const [folderInfo,setFolderInfo] = useState();
     const [selectedFiles,setSelectedFiles] = useState([]);
     const [viewFile, setViewFile] = useState(null);
-    const [files,setFiles] = useState([])
+    const [files,setFiles] = useState([]);
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [isUploading, setIsUploading] = useState(false);
+    const [deleteFile, setDeleteFile] = useState(null);
     const { id } = useParams();
     const [popup,setPopup] = useState({
         show:false,
@@ -30,9 +33,6 @@ export default function Folder(){
       });
     }, 3000);
   };
-    const handleHomepage = () => {
-        navigate(`/homepage`)
-    }
     const fetchFolderInfo = async () => {
         try{
             const response = await axios.get(
@@ -69,32 +69,53 @@ export default function Folder(){
     }
     };
     const handleUpload = async (event) => {
-    event.preventDefault();
-    if (!selectedFiles || selectedFiles.length === 0) {
-        showPopup("Please select at least one file", "error");
-        return;
-    }
-    const formData = new FormData();
-    selectedFiles.forEach((file) => {
-        formData.append("files", file);
-    });
-    try {
-        const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/uploadFile/${id}`,
-        formData,
-        {
-            withCredentials: true,
+        event.preventDefault();
+        if (!selectedFiles || selectedFiles.length === 0) {
+            showPopup("Please select at least one file", "error");
+            return;
         }
-        );
-        fetchFiles();
-        showPopup(response.data.message, "success");
-    } catch (error) {
-        console.error("Upload failed:", error);
-        showPopup(
-        error.response?.data?.message || "Upload failed",
-        "error"
-        );
-    }
+        setIsUploading(true);
+        const initialProgress = {};
+        selectedFiles.forEach((file) => {
+            initialProgress[file.name] = 0;
+        });
+        setUploadProgress(initialProgress);
+        try {
+            for (const file of selectedFiles) {
+                const formData = new FormData();
+                formData.append("files", file);
+                await axios.post(
+                    `${import.meta.env.VITE_API_URL}/uploadFile/${id}`,
+                    formData,
+                    {
+                        withCredentials: true,
+                        onUploadProgress: (progressEvent) => {
+                            if (progressEvent.total) {
+                                const percent = Math.round(
+                                    (progressEvent.loaded * 100) /
+                                    progressEvent.total
+                                );
+                                setUploadProgress((previous) => ({
+                                    ...previous,
+                                    [file.name]: percent,
+                                }));
+                            }
+                        },
+                    }
+                );
+            }
+            await fetchFiles();
+            showPopup("All files uploaded successfully", "success");
+            setSelectedFiles([]);
+        } catch (error) {
+            console.error("Upload failed:", error);
+            showPopup(
+                error.response?.data?.message || "Upload failed",
+                "error"
+            );
+        } finally {
+            setIsUploading(false);
+        }
     };
     const handleDelete = async (fileId) => {
     try {
@@ -158,70 +179,256 @@ export default function Folder(){
         fetchFiles();
     },[id]);
     return(
-        <>
-            {popup.show && (
-            <div className={`popup ${popup.type}`}>
-                {popup.message}
-            </div>
-            )}
-            <h1>Folder</h1>
-            <button onClick={handleHomepage}>Homepage</button>
-            { folderInfo && (
-                <div>
-                    <h1>{folderInfo}</h1>
-                </div>
-                )
-            }
-            <form onSubmit={handleUpload}>
-                <input
-                type="file"
-                multiple
-                onChange={(e) => setSelectedFiles([...e.target.files])}
-                />
-                {selectedFiles.length > 0 && (
-                <div>
-                    <h3>Selected Files</h3>
-
-                    {selectedFiles.map((file, index) => (
-                    <div key={index}>
-                        <span>{file.name}</span>
-                        <span> — {(file.size / 1024 / 1024).toFixed(2)} MB</span>
+            <>
+                <Navbar />
+                {popup.show && (
+                    <div className={`popup ${popup.type}`}>
+                        {popup.message}
                     </div>
+                )}
+                <main className="folderPage">
+                    {/* Folder Header */}
+                    {folderInfo && (
+                        <div className="folderHeader">
+                            <div>
+                                <p className="folderEyebrow">You are in </p>
+                                <h1>{folderInfo} Folder</h1>
+                            </div>
+                        </div>
+                    )}
+                    {/* Upload Section */}
+                    <section className="uploadSection">
+                        <div className="uploadHeader">
+                            <div>
+                                <h2>Upload files</h2>
+                                <p>Add files to this folder</p>
+                            </div>
+                        </div>
+                        <form
+                            className="uploadForm"
+                            onSubmit={handleUpload}
+                        >
+                            <label className="fileInput">
+                                <span>Choose files</span>
+                                <input
+                                    type="file"
+                                    multiple
+                                    onChange={(e) =>
+                                        setSelectedFiles([...e.target.files])
+                                    }
+                                />
+                            </label>
+                            {/* Upload Progress */}
+                            {isUploading && (
+                            <div className="uploadProgress">
+                                <div className="uploadProgressHeader">
+                                    <h3>Uploading files</h3>
+                                    <span>
+                                        {selectedFiles.length} files
+                                    </span>
+                                </div>
+                                <div className="uploadFileList">
+                        {selectedFiles.map((file, index) => {
+                            const progress =
+                                uploadProgress[file.name] || 0;
+                            return (
+                                <div
+                                    className="uploadFileItem"
+                                    key={index}
+                                >
+                                    <div className="uploadFileInfo">
+                                        <span className="uploadFileName">
+                                            {file.name}
+                                        </span>
+                                        <span className="uploadFileStatus">
+                                            {progress === 100
+                                                ? "✓ Complete"
+                                                : progress === 0
+                                                ? "Waiting..."
+                                                : `${progress}%`
+                                            }
+                                        </span>
+                                    </div>
+                                    <div className="progressBar">
+                                        <div
+                                            className="progressBarFill"
+                                            style={{
+                                                width: `${progress}%`
+                                            }}
+                                        />
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                </div>
+            )}
+                {/* Selected Files */}
+                {selectedFiles.length > 0 && (
+                    <div className="selectedFiles">
+                        <h3>Selected files</h3>
+                        {selectedFiles.map((file, index) => (
+                            <div
+                                className="selectedFile"
+                                key={index}
+                            >
+                                <span>{file.name}</span>
+                                <span>
+                                    {(file.size / 1024 / 1024).toFixed(2)} MB
+                                </span>
+                            </div>
+                        ))}
+                    </div>
+                )}
+                <button
+                    className="uploadButton"
+                    type="submit"
+                    disabled={isUploading}
+                >
+                    {isUploading
+                        ? `Uploading ${uploadProgress}%`
+                        : "Upload"}
+                </button>
+            </form>
+        </section>
+        {/* Files Section */}
+        <section className="filesSection">
+            <div className="filesHeader">
+                <h2>Files</h2>
+                <span>
+                    {files.length}{" "}
+                    {files.length === 1 ? "file" : "files"}
+                </span>
+            </div>
+            {files.length === 0 ? (
+                <div className="emptyFiles">
+                    <p>No files in this folder yet.</p>
+                </div>
+            ) : (
+                <div className="fileList">
+                    {files.map((file) => (
+                        <div
+                            className="fileRow"
+                            key={file._id}
+                            onClick={() => setViewFile(file)}
+                        >
+                            <div className="fileInfo">
+                                <div className="fileIcon">
+                                </div>
+                                <div>
+                                    <h3>{file.fileName}</h3>
+                                </div>
+                            </div>
+                            <div
+                                className="fileActions"
+                                onClick={(e) =>
+                                    e.stopPropagation()
+                                }
+                            >
+                                <button
+                                    onClick={() =>
+                                        handleDownload(file)
+                                    }
+                                >
+                                    Download
+                                </button>
+                               <button
+                                    className="deleteFile"
+                                    onClick={() => setDeleteFile(file)}
+                                >
+                                    Delete
+                                </button>
+                                {deleteFile && (
+                                    <div
+                                        className="deleteModalOverlay"
+                                        onClick={() => setDeleteFile(null)}
+                                    >
+                                        <div
+                                            className="deleteModal"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            <div className="deleteModalContent">
+                                                <h3>Delete file?</h3>
+                                                <p>
+                                                    Are you sure you want to delete{" "}
+                                                    <strong>{deleteFile.fileName}</strong>?
+                                                </p>
+                                                <span>This action cannot be undone.</span>
+                                            </div>
+                                            <div className="deleteModalActions">
+                                                <button
+                                                    type="button"
+                                                    className="cancelDelete"
+                                                    onClick={() => setDeleteFile(null)}
+                                                >
+                                                    Cancel
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className="confirmDelete"
+                                                    onClick={async () => {
+                                                        await handleDelete(deleteFile._id);
+                                                        setDeleteFile(null);
+                                                    }}
+                                                >
+                                                    Delete
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        </div>
                     ))}
                 </div>
-                )}
-                <button type="submit">Upload</button>
-            </form>
-            {files.length === 0 ? (
-                <p>No files in this folder yet.</p>
-                ) : (
-                    files.map((file)=>(
-                        <div key = {file._id}>
-                            <h2>{file.fileName}</h2>
-                            <button onClick={()=>handleDelete(file._id)}>Delete -</button>
-                            <button type="button"className="file-action-btn file-btn-download"onClick={() => handleDownload(file)}>Download</button>
-                            <div onClick={() => setViewFile(file)}>  {file.fileName} </div>
-                        </div>
-                    ))
-                )
-            }
-            {viewFile && (
-            <div className="modal-overlay">
-                <div className="modal">
-                <button onClick={() => setViewFile(null)}>
+            )}
+        </section>
+    </main>
+    {/* File Preview Modal */}
+        {viewFile && (
+        <div className="modal-overlay" onClick={() => setViewFile(null)}>
+            <div
+                className={`modal ${
+                    viewFile.mimeType?.startsWith("image/")
+                        ? "imageModal"
+                        : viewFile.mimeType?.startsWith("video/")
+                        ? "videoModal"
+                        : "documentModal"
+                }`}
+                onClick={(e) => e.stopPropagation()}
+            >
+                <button
+                    className="modalClose"
+                    onClick={() => setViewFile(null)}
+                >
                     ✕
                 </button>
-
                 <h3>{viewFile.fileName}</h3>
-
-                <iframe
-                    src={`${import.meta.env.VITE_API_URL}/files/${viewFile._id}/view`}
-                    width="100%"
-                    height="500px"
-                />
-                </div>
+                {viewFile.mimeType?.startsWith("image/") ? (
+                    <div className="imagePreview">
+                        <img
+                            src={`${import.meta.env.VITE_API_URL}/files/${viewFile._id}/view`}
+                            alt={viewFile.fileName}
+                        />
+                    </div>
+                ) : viewFile.mimeType?.startsWith("video/") ? (
+                    <div className="videoPreview">
+                        <video
+                            src={`${import.meta.env.VITE_API_URL}/files/${viewFile._id}/view`}
+                            controls
+                            preload="metadata"
+                        />
+                    </div>
+                ) : (
+                    <iframe
+                        className="documentPreview"
+                        src={`${import.meta.env.VITE_API_URL}/files/${viewFile._id}/view`}
+                        title={viewFile.fileName}
+                    />
+                )}
             </div>
-            )}
-        </>
+        </div>
+        )}
+    </>
     )
 }

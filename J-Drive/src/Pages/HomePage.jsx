@@ -1,6 +1,7 @@
 import {useEffect, useState} from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../Component/Navbar";
 export default function HomePage(){
     const navigate =  useNavigate();
     const [createFolder,setCreateFolder] = useState({ name : "" });
@@ -8,11 +9,8 @@ export default function HomePage(){
     const [folderNewName,setFolderNewName] = useState("");
     const [showRename,setShowRename] = useState(false);
     const [renameId,setRenameId] = useState(null);
-    const [popup,setPopup] = useState({
-        show:false,
-        message:"",
-        type:"",
-    });
+    const [deleteFolder, setDeleteFolder] = useState(null);
+    const [popup,setPopup] = useState({show:false,message:"",type:"",});
     const showPopup = (message, type) => {
     setPopup({
       show: true,
@@ -200,54 +198,104 @@ export default function HomePage(){
         }, 3000);
     }
     };
-    const handleLogout = async () => {
-    try {
-        await axios.post(
-            "http://localhost:3000/logout",
-            {},
-            {
-                withCredentials: true,
-            }
-        );
-        window.location.href = "/login";
-        // navigate("/login");
-    } catch (err) {
-        console.log(err);
-    }
-}
     return(
         <>
-            <h1>Homepage</h1>
-            <button onClick={handleLogout}>Logout</button>
-            <form onSubmit={handleCreateFolder}>
-                <input type="text" 
-                name="name"
-                value={createFolder.name}
-                onChange={handleOnChange}
-                placeholder="Enter Folder Name"
-                />
-                <button type="Submit">Create +</button>
-            </form>
+            <Navbar/>
+            <div className="createFolder">
+                <form onSubmit={handleCreateFolder}>
+                    <input type="text" 
+                    name="name"
+                    value={createFolder.name}
+                    onChange={handleOnChange}
+                    placeholder="Enter Folder Name"
+                    />
+                    <button type="Submit">Create +</button>
+                </form>
+            </div>
             <div>
-                {allfolder.length === 0 ? (
-                    <p>No folders yet. Create your first folder.</p>
-                    ) : (
-                    allfolder.map((folder) => (
-                        <div key={folder._id}>
-                        <h3 onDoubleClick={() => handleOpenFolder(folder._id)}>
-                            {folder.folderName}
-                        </h3>
+                {allfolder.map((folder) => (
+    <div
+        className="folderCard"
+        key={folder._id}
+        onDoubleClick={() => handleOpenFolder(folder._id)}
+    >
+        <div className="folderInfo">
+            <div className="folderIcon">□</div>
 
-                        <button onClick={() => handleRename(folder._id)}>
-                            Rename
+            <div>
+                <h3>{folder.folderName}</h3>
+                <p>Double-click to open</p>
+            </div>
+        </div>
+
+        <div className="folderActions">
+            <button
+                onClick={(e) => {
+                    e.stopPropagation();
+                    handleRename(folder._id);
+                }}
+            >
+                Rename
+            </button>
+           <button
+                className="deleteButton"
+                onClick={(e) => {
+                    e.stopPropagation();
+                    setDeleteFolder(folder);
+                }}
+            >
+                Delete
+            </button>
+            {deleteFolder && (
+            <div
+                className="deleteModalOverlay"
+                onClick={() => setDeleteFolder(null)}
+            >
+                <div
+                    className="deleteModal"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    <div className="deleteModalContent">
+                        <h3>Delete folder?</h3>
+
+                        <p>
+                            Are you sure you want to delete{" "}
+                            <strong>{deleteFolder.folderName}</strong>?
+                        </p>
+
+                        <span>
+                            This will permanently delete the folder and all
+                            files inside it.
+                        </span>
+                    </div>
+
+                    <div className="deleteModalActions">
+                        <button
+                            type="button"
+                            className="cancelDelete"
+                            onClick={() => setDeleteFolder(null)}
+                        >
+                            Cancel
                         </button>
 
-                        <button onClick={() => handleDelete(folder._id)}>
-                            Delete
+                        <button
+                            type="button"
+                            className="confirmDelete"
+                            onClick={async () => {
+                                await handleDelete(deleteFolder._id);
+                                setDeleteFolder(null);
+                            }}
+                        >
+                            Delete folder
                         </button>
-                        </div>
-                    ))
-                    )}
+                    </div>
+                </div>
+            </div>
+            )}
+        </div>
+    </div>
+    )
+)}
             </div>
             {
                 showRename && (

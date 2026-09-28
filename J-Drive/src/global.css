@@ -1,0 +1,1587 @@
+@import "tailwindcss";
+body {
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.navbar {
+    width: 100%;
+    height: 76px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 48px;
+
+    background: #ffffff;
+    border-bottom: 1px solid #e8e8e8;
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+
+    box-sizing: border-box;
+}
+
+.navbarLeft {
+    display: flex;
+    align-items: center;
+}
+
+.navbarLeft p {
+    margin: 0;
+
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.8px;
+
+    color: #111111;
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: 28px;
+}
+
+.right a {
+    color: #222222;
+    text-decoration: none;
+
+    font-size: 14px;
+    font-weight: 500;
+
+    transition:
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.right a:hover {
+    color: #000000;
+    opacity: 0.6;
+}
+
+.loddgedinNavbar {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.loddgedinNavbar p {
+    margin: 0;
+    color: #111111;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.loddgedinNavbar p:nth-of-type(2) {
+    color: #888888;
+
+    font-size: 12px;
+    font-weight: 400;
+
+    max-width: 220px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.loddgedinNavbar button {
+    border: none;
+    background: transparent;
+
+    padding: 8px 0;
+
+    color: #111111;
+
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        color 0.2s ease,
+        opacity 0.2s ease;
+}
+
+.loddgedinNavbar button:hover {
+    color: #d32f2f;
+}
+
+@media (max-width: 900px) {
+    .navbar {
+        padding: 0 28px;
+    }
+
+    .right {
+        gap: 18px;
+    }
+
+    .loddgedinNavbar {
+        gap: 18px;
+    }
+
+    .loddgedinNavbar p:nth-of-type(2) {
+        display: none;
+    }
+}
+
+
+@media (max-width: 600px) {
+    .navbar {
+        height: 68px;
+        padding: 0 20px;
+    }
+
+    .navbarLeft p {
+        font-size: 20px;
+    }
+
+    .right {
+        gap: 14px;
+    }
+
+    .loddgedinNavbar {
+        gap: 14px;
+    }
+
+    .loddgedinNavbar > p {
+        display: none;
+    }
+
+    .right a {
+        font-size: 13px;
+    }
+
+    .loddgedinNavbar button {
+        font-size: 13px;
+    }
+}
+.createFolder{
+    display: flex;
+    justify-content: center;
+}
+.noFolder{
+    display: flex;
+    justify-content: center;
+    margin-top: 25rem;
+    font-weight: 600;
+    font-size: xx-large;
+}
+.folderCard {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 20px;
+
+    border: 1px solid #e8e8e8;
+    border-radius: 14px;
+
+    background: #fff;
+
+    box-sizing: border-box;
+
+    transition:
+        border-color 0.2s ease,
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.folderCard:hover {
+    border-color: #d5d5d5;
+    transform: translateY(-1px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.04);
+}
+
+
+/* Folder information */
+
+.folderInfo {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+
+    cursor: pointer;
+}
+
+.folderIcon {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 10px;
+
+    background: #f5f5f5;
+
+    font-size: 18px;
+}
+
+
+.folderInfo h3 {
+    margin: 0;
+
+    font-size: 15px;
+    font-weight: 600;
+
+    letter-spacing: -0.2px;
+
+    color: #111;
+}
+
+.folderInfo p {
+    margin: 4px 0 0;
+
+    font-size: 12px;
+
+    color: #999;
+}
+
+
+/* Actions */
+
+.folderActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.folderActions button {
+    border: none;
+    background: transparent;
+
+    padding: 8px 12px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        color 0.2s ease;
+}
+
+.folderActions button:hover {
+    background: #f5f5f5;
+}
+
+.folderActions .deleteButton {
+    color: #d64545;
+}
+
+.folderActions .deleteButton:hover {
+    background: #fff1f1;
+}
+.popup {
+    position: fixed;
+    top: 90px;
+    right: 30px;
+
+    min-width: 280px;
+    max-width: 380px;
+
+    padding: 14px 18px;
+
+    border-radius: 12px;
+
+    background: #ffffff;
+    border: 1px solid #e5e5e5;
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+
+    color: #111111;
+
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+
+    z-index: 9999;
+
+    animation: popupSlideIn 0.25s ease-out;
+}
+
+
+
+.popup.success {
+    border-left: 4px solid #22c55e;
+}
+
+
+
+.popup.error {
+    border-left: 4px solid #ef4444;
+}
+
+
+
+.popup.warning {
+    border-left: 4px solid #f59e0b;
+}
+
+
+
+.popup.info {
+    border-left: 4px solid #3b82f6;
+}
+
+
+
+@keyframes popupSlideIn {
+    from {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+.folderPage {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 50px 40px 80px;
+}
+
+
+/* Folder header */
+
+.folderHeader {
+    margin-bottom: 45px;
+}
+
+.folderEyebrow {
+    margin: 0 0 8px;
+
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+
+    color: #999;
+}
+
+.folderHeader h1 {
+    margin: 0;
+
+    font-size: 42px;
+    font-weight: 600;
+    letter-spacing: -1.8px;
+
+    color: #111;
+}
+
+
+/* Upload */
+
+.uploadSection {
+    padding: 28px;
+
+    border: 1px solid #e7e7e7;
+    border-radius: 16px;
+
+    background: #fafafa;
+
+    margin-bottom: 55px;
+}
+
+.uploadHeader h2,
+.filesHeader h2 {
+    margin: 0;
+
+    font-size: 20px;
+    font-weight: 600;
+    letter-spacing: -0.5px;
+}
+
+.uploadHeader p {
+    margin: 6px 0 25px;
+
+    font-size: 13px;
+    color: #888;
+}
+
+.uploadForm {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+
+/* File input */
+
+.fileInput {
+    display: inline-flex;
+    width: fit-content;
+
+    padding: 11px 16px;
+
+    border: 1px solid #ddd;
+    border-radius: 9px;
+
+    background: white;
+
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.fileInput input {
+    display: none;
+}
+
+
+/* Selected files */
+
+.selectedFiles {
+    padding-top: 5px;
+}
+
+.selectedFiles h3 {
+    margin: 0 0 10px;
+
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.selectedFile {
+    display: flex;
+    justify-content: space-between;
+
+    padding: 9px 0;
+
+    border-bottom: 1px solid #e8e8e8;
+
+    font-size: 13px;
+}
+
+.selectedFile span:last-child {
+    color: #888;
+}
+
+
+/* Upload button */
+
+.uploadButton {
+    align-self: flex-start;
+
+    border: none;
+    border-radius: 9px;
+
+    padding: 11px 20px;
+
+    background: #111;
+    color: white;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: opacity 0.2s ease;
+}
+
+.uploadButton:hover {
+    opacity: 0.75;
+}
+
+
+/* Files */
+
+.filesSection {
+    width: 100%;
+}
+
+.filesHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 16px;
+}
+
+.filesHeader span {
+    font-size: 12px;
+    color: #999;
+}
+
+
+/* File list */
+
+.fileList {
+    border-top: 1px solid #e5e5e5;
+}
+
+.fileRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 4px;
+
+    border-bottom: 1px solid #e8e8e8;
+
+    cursor: pointer;
+
+    transition: background 0.2s ease;
+}
+
+.fileRow:hover {
+    background: #fafafa;
+}
+
+.fileInfo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.fileIcon {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border-radius: 9px;
+
+    background: #f3f3f3;
+}
+
+.fileInfo h3 {
+    margin: 0;
+
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.fileActions {
+    display: flex;
+    gap: 8px;
+}
+
+.fileActions button {
+    border: none;
+    background: transparent;
+
+    padding: 8px 10px;
+
+    font-family: inherit;
+    font-size: 12px;
+    font-weight: 500;
+
+    cursor: pointer;
+}
+
+.fileActions button:hover {
+    background: #f2f2f2;
+    border-radius: 7px;
+}
+
+.fileActions .deleteFile {
+    color: #d64545;
+}
+
+
+/* Empty state */
+
+.emptyFiles {
+    padding: 60px 20px;
+
+    text-align: center;
+
+    border: 1px dashed #ddd;
+    border-radius: 14px;
+}
+
+.emptyFiles p {
+    margin: 0;
+
+    color: #999;
+    font-size: 13px;
+}
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    z-index: 99999;
+}
+
+.modal {
+    position: relative;
+
+    width: 90vw;
+    height: 90vh;
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+
+    display: flex;
+    flex-direction: column;
+}
+
+.modal h3 {
+    flex-shrink: 0;
+
+    margin: 0;
+    padding: 18px 60px 18px 24px;
+
+    font-size: 16px;
+    font-weight: 600;
+
+    border-bottom: 1px solid #e8e8e8;
+}
+
+.modal iframe {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    flex: 1;
+
+    border: none;
+}
+
+.modal > button {
+    position: absolute;
+
+    top: 12px;
+    right: 16px;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #f1f1f1;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    z-index: 10;
+}
+
+.modal > button:hover {
+    background: #e5e5e5;
+}
+.uploadProgress {
+    margin-top: 20px;
+    padding: 20px;
+
+    border: 1px solid #e7e7e7;
+    border-radius: 14px;
+
+    background: #fafafa;
+}
+
+.uploadProgressHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 20px;
+}
+
+.uploadProgressHeader h3 {
+    margin: 0;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.uploadProgressHeader span {
+    font-size: 12px;
+    color: #888;
+}
+
+.uploadFileList {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.uploadFileItem {
+    width: 100%;
+}
+
+.uploadFileInfo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 8px;
+}
+
+.uploadFileName {
+    max-width: 70%;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.uploadFileStatus {
+    font-size: 12px;
+    color: #888;
+}
+
+.progressBar {
+    width: 100%;
+    height: 6px;
+
+    overflow: hidden;
+
+    border-radius: 999px;
+
+    background: #e5e5e5;
+}
+
+.progressBarFill {
+    height: 100%;
+
+    border-radius: 999px;
+
+    background: #111;
+
+    transition: width 0.2s ease;
+}
+.videoPreview {
+    flex: 1;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    min-height: 0;
+
+    background: #111;
+
+    overflow: hidden;
+}
+
+.videoPreview video {
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+
+    display: block;
+}
+/* =========================
+   MODAL BACKDROP
+========================= */
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: 40px;
+    box-sizing: border-box;
+
+    background: rgba(0, 0, 0, 0.55);
+
+    z-index: 99999;
+}
+
+
+/* =========================
+   BASE MODAL
+========================= */
+
+.modal {
+    position: relative;
+
+    background: #ffffff;
+
+    border-radius: 16px;
+
+    overflow: hidden;
+
+    box-shadow: 0 25px 80px rgba(0, 0, 0, 0.25);
+
+    display: flex;
+    flex-direction: column;
+
+    max-width: calc(100vw - 80px);
+    max-height: calc(100vh - 80px);
+}
+
+
+/* =========================
+   IMAGE MODAL
+========================= */
+
+.imageModal {
+    width: auto;
+    height: auto;
+
+    max-width: 80vw;
+    max-height: 80vh;
+}
+
+
+/* Image title */
+
+.imageModal h3 {
+    flex-shrink: 0;
+
+    margin: 0;
+
+    padding: 15px 55px 15px 20px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    border-bottom: 1px solid #e8e8e8;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+/* Image container */
+
+.imagePreview {
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 16px;
+
+    background: #f7f7f7;
+
+    overflow: hidden;
+
+    max-width: 80vw;
+    max-height: calc(80vh - 55px);
+
+    box-sizing: border-box;
+}
+
+
+/* Actual image */
+
+.imagePreview img {
+    display: block;
+
+    width: auto;
+    height: auto;
+
+    max-width: calc(80vw - 32px);
+    max-height: calc(80vh - 90px);
+
+    object-fit: contain;
+
+    margin: 0;
+}
+
+
+/* =========================
+   VIDEO MODAL
+========================= */
+
+.videoModal {
+    width: 80vw;
+    height: 80vh;
+
+    max-width: 1200px;
+    max-height: 800px;
+}
+
+
+.videoModal h3 {
+    flex-shrink: 0;
+
+    margin: 0;
+
+    padding: 15px 55px 15px 20px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    border-bottom: 1px solid #e8e8e8;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.videoPreview {
+    flex: 1;
+
+    min-height: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #111;
+
+    overflow: hidden;
+}
+
+
+.videoPreview video {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    object-fit: contain;
+}
+
+
+/* =========================
+   PDF / DOCUMENT MODAL
+========================= */
+
+.documentModal {
+    width: 80vw;
+    height: 85vh;
+
+    max-width: 1200px;
+    max-height: 900px;
+}
+
+
+.documentModal h3 {
+    flex-shrink: 0;
+
+    margin: 0;
+
+    padding: 15px 55px 15px 20px;
+
+    font-size: 14px;
+    font-weight: 600;
+
+    border-bottom: 1px solid #e8e8e8;
+
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
+.documentPreview {
+    display: block;
+
+    width: 100%;
+    height: 100%;
+
+    flex: 1;
+
+    min-height: 0;
+
+    border: none;
+
+    overflow: hidden;
+}
+
+
+/* =========================
+   CLOSE BUTTON
+========================= */
+
+.modalClose {
+    position: absolute;
+
+    top: 10px;
+    right: 12px;
+
+    width: 34px;
+    height: 34px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 50%;
+
+    background: #f1f1f1;
+
+    color: #111;
+
+    font-size: 16px;
+
+    cursor: pointer;
+
+    z-index: 10;
+
+    transition:
+        background 0.2s ease,
+        transform 0.2s ease;
+}
+
+
+.modalClose:hover {
+    background: #e5e5e5;
+    transform: scale(1.05);
+}
+
+
+/* =========================
+   MOBILE
+========================= */
+
+@media (max-width: 700px) {
+
+    .modal-overlay {
+        padding: 15px;
+    }
+
+    .imageModal {
+        max-width: calc(100vw - 30px);
+        max-height: calc(100vh - 30px);
+    }
+
+    .imagePreview {
+        max-width: calc(100vw - 30px);
+        max-height: calc(100vh - 85px);
+    }
+
+    .imagePreview img {
+        max-width: calc(100vw - 62px);
+        max-height: calc(100vh - 115px);
+    }
+
+    .videoModal,
+    .documentModal {
+        width: calc(100vw - 30px);
+        height: calc(100vh - 30px);
+    }
+}
+.deleteModalOverlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    z-index: 100000;
+
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.deleteModal {
+    width: 100%;
+    max-width: 420px;
+
+    padding: 28px;
+
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.deleteModal h3 {
+    margin: 0 0 10px;
+
+    font-size: 18px;
+    font-weight: 600;
+    color: #111;
+}
+
+.deleteModal p {
+    margin: 0 0 6px;
+
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444;
+
+    word-break: break-word;
+}
+
+.deleteModal p strong {
+    color: #111;
+}
+
+.deleteModal > span {
+    display: block;
+
+    margin-top: 4px;
+
+    font-size: 12px;
+    color: #888;
+}
+
+.deleteModalActions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+
+    margin-top: 26px;
+}
+
+.deleteModalActions button {
+    padding: 10px 18px;
+
+    border-radius: 8px;
+
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 500;
+
+    cursor: pointer;
+
+    transition: 0.2s ease;
+}
+
+.cancelDelete {
+    background: #fff;
+    color: #222;
+
+    border: 1px solid #ddd;
+}
+
+.cancelDelete:hover {
+    background: #f5f5f5;
+}
+
+.confirmDelete {
+    background: #111;
+    color: #fff;
+
+    border: 1px solid #111;
+}
+
+.confirmDelete:hover {
+    background: #333;
+}
+.deleteModalOverlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    z-index: 100000;
+
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.deleteModal {
+    width: 100%;
+    max-width: 420px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+
+    padding: 28px;
+
+    box-sizing: border-box;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.deleteModalContent h3 {
+    margin: 0 0 10px;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    color: #111;
+}
+
+.deleteModalContent p {
+    margin: 0 0 6px;
+
+    font-size: 14px;
+    line-height: 1.6;
+
+    color: #444;
+
+    word-break: break-word;
+}
+
+.deleteModalContent p strong {
+    color: #111;
+    font-weight: 600;
+}
+
+.deleteModalContent span {
+    display: block;
+
+    font-size: 12px;
+
+    color: #888;
+}
+
+
+/* BUTTONS */
+
+.deleteModalActions {
+    display: flex;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 28px;
+}
+
+.deleteModalActions button {
+    min-width: 82px;
+    height: 40px;
+
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+
+/* CANCEL */
+
+.cancelDelete {
+    background: #ffffff;
+
+    color: #222;
+
+    border: 1px solid #dcdcdc;
+}
+
+.cancelDelete:hover {
+    background: #f5f5f5;
+}
+
+
+/* DELETE */
+
+.confirmDelete {
+    background: #111111;
+
+    color: #ffffff;
+
+    border: 1px solid #111111;
+}
+
+.confirmDelete:hover {
+    background: #333333;
+}
+
+.deleteModalActions button:active {
+    transform: scale(0.97);
+}
+.deleteModalOverlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    z-index: 100000;
+
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.deleteModal {
+    width: 100%;
+    max-width: 420px;
+
+    background: #ffffff;
+
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+
+    padding: 28px;
+
+    box-sizing: border-box;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.deleteModalContent h3 {
+    margin: 0 0 10px;
+
+    font-size: 18px;
+    font-weight: 600;
+
+    color: #111;
+}
+
+.deleteModalContent p {
+    margin: 0 0 6px;
+
+    font-size: 14px;
+    line-height: 1.6;
+
+    color: #444;
+
+    word-break: break-word;
+}
+
+.deleteModalContent p strong {
+    color: #111;
+    font-weight: 600;
+}
+
+.deleteModalContent span {
+    display: block;
+
+    font-size: 12px;
+
+    color: #888;
+}
+
+
+/* BUTTONS */
+
+.deleteModalActions {
+    display: flex;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    gap: 10px;
+
+    margin-top: 28px;
+}
+
+.deleteModalActions button {
+    min-width: 82px;
+    height: 40px;
+
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.15s ease;
+}
+
+
+/* CANCEL */
+
+.cancelDelete {
+    background: #ffffff;
+
+    color: #222;
+
+    border: 1px solid #dcdcdc;
+}
+
+.cancelDelete:hover {
+    background: #f5f5f5;
+}
+
+
+/* DELETE */
+
+.confirmDelete {
+    background: #111111;
+
+    color: #ffffff;
+
+    border: 1px solid #111111;
+}
+
+.confirmDelete:hover {
+    background: #333333;
+}
+
+.deleteModalActions button:active {
+    transform: scale(0.97);
+}
+.deleteModalOverlay {
+    position: fixed;
+    inset: 0;
+
+    width: 100vw;
+    height: 100vh;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgba(0, 0, 0, 0.35);
+
+    z-index: 100000;
+
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+.deleteModal {
+    width: 100%;
+    max-width: 440px;
+
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 16px;
+
+    padding: 28px;
+
+    box-sizing: border-box;
+
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+}
+
+.deleteModalContent h3 {
+    margin: 0 0 10px;
+
+    font-size: 18px;
+    font-weight: 600;
+    color: #111;
+}
+
+.deleteModalContent p {
+    margin: 0 0 6px;
+
+    font-size: 14px;
+    line-height: 1.6;
+    color: #444;
+
+    word-break: break-word;
+}
+
+.deleteModalContent p strong {
+    color: #111;
+    font-weight: 600;
+}
+
+.deleteModalContent span {
+    display: block;
+
+    font-size: 12px;
+    line-height: 1.5;
+
+    color: #888;
+}
+
+.deleteModalActions {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 28px;
+}
+
+.deleteModalActions button {
+    min-width: 82px;
+    height: 40px;
+
+    padding: 0 18px;
+
+    border-radius: 8px;
+
+    font-family: "Plus Jakarta Sans", sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.cancelDelete {
+    background: #fff;
+    color: #222;
+    border: 1px solid #dcdcdc;
+}
+
+.cancelDelete:hover {
+    background: #f5f5f5;
+}
+
+.confirmDelete {
+    background: #111;
+    color: #fff;
+    border: 1px solid #111;
+}
+
+.confirmDelete:hover {
+    background: #333;
+}

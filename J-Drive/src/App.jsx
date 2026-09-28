@@ -5,6 +5,7 @@ import Folder from './Pages/Folder';
 import Signup from './Pages/Signup';
 import Login from './Pages/login';
 import ProtectedRoute from './ProtectedRoute';
+import Setting from './Pages/Setting';
 function App() {
 
   return (
@@ -14,6 +15,7 @@ function App() {
           <Route path="/signup"element={<Signup/>} />
           <Route path="/login"element={<Login/>} />
           <Route path="/homepage"element={<ProtectedRoute><HomePage/></ProtectedRoute>} />
+          <Route path="/setting"element={<ProtectedRoute><Setting/></ProtectedRoute>} />
           <Route path="/folder/:id"element={<ProtectedRoute><Folder/></ProtectedRoute>} />
         </Routes>
       </BrowserRouter>
