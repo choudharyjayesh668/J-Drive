@@ -4,10 +4,10 @@ const verifyToken = require("../middleware/verifyToken");
 const telegramConfig = require("../middleware/telegramConfig");
 
 const { createFolder } = require("../controllers/folderController");
-const showingAllFolder = require("../controllers/showingallfolder");
-const { deleteFolder } = require("../controllers/deleteFolder");
-const { openFolder } = require("../controllers/openFolder");
-const {renameFolder} = require("../controllers/renameFolder");
+const {showingAllFolder} = require("../controllers/folderController");
+const { deleteFolder } = require("../controllers/folderController");
+const { openFolder } = require("../controllers/folderController");
+const {renameFolder} = require("../controllers/folderController");
 
 router.post("/createFolder",verifyToken, createFolder);
 router.get("/folder", verifyToken ,showingAllFolder);
