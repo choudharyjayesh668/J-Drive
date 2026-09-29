@@ -2,7 +2,7 @@ import { useState } from "react";
 import axios from "axios";
 import Navbar from "../Component/Navbar";
 import { useNavigate, Link } from "react-router-dom";
-import { HardDrives, ArrowRight, LockKey, EnvelopeSimple } from "@phosphor-icons/react";
+import { HardDrives, ArrowRight } from "@phosphor-icons/react";
 import Reveal from "../Component/Reveal";
 import MagneticButton from "../Component/MagneticButton";
 

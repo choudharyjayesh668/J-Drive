@@ -1,9 +1,8 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import { useNavigate, useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import Navbar from "../Component/Navbar";
 import {
-  Folder as FolderIcon,
   ArrowLeft,
   UploadSimple,
   Files,
@@ -19,12 +18,9 @@ import {
   X,
   CheckCircle,
   WarningCircle,
-  Eye,
 } from "@phosphor-icons/react";
-import Reveal from "../Component/Reveal";
 
 export default function Folder() {
-  const navigate = useNavigate();
   const [folderInfo, setFolderInfo] = useState("");
   const [selectedFiles, setSelectedFiles] = useState([]);
   const [viewFile, setViewFile] = useState(null);

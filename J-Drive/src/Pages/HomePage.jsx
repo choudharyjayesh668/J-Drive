@@ -14,7 +14,6 @@ import {
   ListBullets,
   X,
 } from "@phosphor-icons/react";
-import Reveal from "../Component/Reveal";
 import MagneticButton from "../Component/MagneticButton";
 
 export default function HomePage() {
@@ -42,7 +41,7 @@ export default function HomePage() {
     try {
       localStorage.setItem("jdrive_view_mode", mode);
     } catch {
-
+      // ignore localStorage quota or privacy errors
     }
   };
 

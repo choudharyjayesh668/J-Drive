@@ -3,9 +3,7 @@ import {
   HardDrives,
   ArrowRight,
   ShieldCheck,
-  Eye,
   Folders,
-  UploadSimple,
   FilePdf,
   FileImage,
   FileVideo,
@@ -782,6 +780,9 @@ export default function LandingPage() {
             <a href="#security" style={{ color: "var(--text-light-muted)", transition: "color 0.2s ease" }}>
               Security
             </a>
+            <Link to="/guide" style={{ color: "var(--text-light-muted)", transition: "color 0.2s ease" }}>
+              Storage Guide
+            </Link>
             <Link to="/login" style={{ color: "var(--text-light-muted)", transition: "color 0.2s ease" }}>
               Sign In
             </Link>

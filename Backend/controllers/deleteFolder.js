@@ -21,9 +21,9 @@ const deleteFolder = async (req, res) => {
     for (const file of files) {
         try {
             await axios.post(
-                `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/deleteMessage`,
+                `https://api.telegram.org/bot${req.telegramBotToken}/deleteMessage`,
                 {
-                    chat_id: process.env.TELEGRAM_CHANNEL_ID,
+                    chat_id: req.telegramChannelId,
                     message_id: file.messageId,
                 }
             );

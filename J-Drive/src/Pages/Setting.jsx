@@ -1,20 +1,62 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Navbar from "../Component/Navbar";
-import { ShieldCheck, HardDrives, ArrowLeft, SignOut, LockKey } from "@phosphor-icons/react";
-import Reveal from "../Component/Reveal";
+import { ShieldCheck, HardDrives, ArrowLeft, SignOut, BookOpen, LockKey, CheckCircle } from "@phosphor-icons/react";
+
+const MASKED_PLACEHOLDER = "••••••••";
 
 export default function Setting() {
   const [user, setUser] = useState({ name: "", email: "" });
   const [loading, setLoading] = useState(true);
-  const navigate = useNavigate();
+  const [telegramData, setTelegramData] = useState({
+    telegramBotToken: "",
+    telegramChannelId: "",
+  });
+  const [hasSavedToken, setHasSavedToken] = useState(false);
+  const [hasSavedChannel, setHasSavedChannel] = useState(false);
+  const [isTokenEdited, setIsTokenEdited] = useState(false);
+  const [isChannelEdited, setIsChannelEdited] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const toastTimeoutRef = useRef(null);
+  const savedValuesRef = useRef({
+    telegramBotToken: "",
+    telegramChannelId: "",
+  });
 
   useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_API_URL}/me`, { withCredentials: true })
       .then((res) => {
         setUser({ name: res.data.name, email: res.data.email });
+        const token = res.data.telegramBotToken || "";
+        const channelId = res.data.telegramChannelId || "";
+
+        setTelegramData({
+          telegramBotToken: token,
+          telegramChannelId: channelId,
+        });
+
+        savedValuesRef.current = {
+          telegramBotToken: token,
+          telegramChannelId: channelId,
+        };
+
+        if (token) {
+          setHasSavedToken(true);
+          setIsTokenEdited(false);
+        } else {
+          setHasSavedToken(false);
+          setIsTokenEdited(false);
+        }
+
+        if (channelId) {
+          setHasSavedChannel(true);
+          setIsChannelEdited(false);
+        } else {
+          setHasSavedChannel(false);
+          setIsChannelEdited(false);
+        }
       })
       .catch((err) => {
         console.error("Failed to load user settings:", err);
@@ -22,6 +64,12 @@ export default function Setting() {
       .finally(() => {
         setLoading(false);
       });
+
+    return () => {
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+    };
   }, []);
 
   const handleLogout = async () => {
@@ -37,6 +85,75 @@ export default function Setting() {
     }
   };
 
+  const handleTelegramToken = async (event) => {
+    event.preventDefault();
+    try {
+      const tokenToSend =
+        hasSavedToken && !isTokenEdited
+          ? savedValuesRef.current.telegramBotToken
+          : telegramData.telegramBotToken === MASKED_PLACEHOLDER
+          ? savedValuesRef.current.telegramBotToken
+          : telegramData.telegramBotToken;
+
+      const channelToSend =
+        hasSavedChannel && !isChannelEdited
+          ? savedValuesRef.current.telegramChannelId
+          : telegramData.telegramChannelId === MASKED_PLACEHOLDER
+          ? savedValuesRef.current.telegramChannelId
+          : telegramData.telegramChannelId;
+
+      const payload = {
+        telegramBotToken: tokenToSend,
+        telegramChannelId: channelToSend,
+      };
+
+      const response = await axios.post(
+        `${import.meta.env.VITE_API_URL}/TelegramData`,
+        payload,
+        {
+          withCredentials: true,
+        },
+      );
+      console.log(response.data.message);
+
+      savedValuesRef.current = {
+        telegramBotToken: tokenToSend,
+        telegramChannelId: channelToSend,
+      };
+
+      if (tokenToSend) {
+        setHasSavedToken(true);
+        setIsTokenEdited(false);
+      } else {
+        setHasSavedToken(false);
+        setIsTokenEdited(false);
+      }
+
+      if (channelToSend) {
+        setHasSavedChannel(true);
+        setIsChannelEdited(false);
+      } else {
+        setHasSavedChannel(false);
+        setIsChannelEdited(false);
+      }
+
+      setTelegramData({
+        telegramBotToken: tokenToSend,
+        telegramChannelId: channelToSend,
+      });
+
+      if (toastTimeoutRef.current) {
+        clearTimeout(toastTimeoutRef.current);
+      }
+      setSuccessMessage(response.data.message);
+      toastTimeoutRef.current = setTimeout(() => {
+        setSuccessMessage("");
+        toastTimeoutRef.current = null;
+      }, 5000);
+    } catch (err) {
+      console.error("Failed to update Telegram data:", err);
+    }
+  };
   const initials = user.name
     ? user.name
         .split(" ")
@@ -153,6 +270,191 @@ export default function Setting() {
               </div>
             </div>
 
+            {/* Telegram Storage */}
+            <div className="editorial-card" style={{ borderRadius: "var(--radius-xl)" }}>
+              <h2 style={{ fontSize: "18px", fontWeight: 600, letterSpacing: "-0.02em", marginBottom: "4px" }}>
+                Telegram Storage
+              </h2>
+              <p style={{ fontSize: "13.5px", color: "var(--text-dark-muted)", marginBottom: "20px" }}>
+                Connect your Telegram bot and private channel to use your own Telegram storage with J-Drive.
+              </p>
+
+              <form onSubmit={handleTelegramToken} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                <div className="input-block">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <label className="input-label" htmlFor="telegramBotToken">
+                      Telegram Bot API Token
+                    </label>
+                    {hasSavedToken && !isTokenEdited && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsTokenEdited(true);
+                          setTelegramData((prev) => ({ ...prev, telegramBotToken: "" }));
+                        }}
+                        style={{
+                          fontSize: "12px",
+                          fontWeight: 500,
+                          color: "var(--accent-blue)",
+                          cursor: "pointer",
+                          padding: 0,
+                          background: "none",
+                          border: "none",
+                        }}
+                      >
+                        Replace token
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    id="telegramBotToken"
+                    type="password"
+                    className="text-input-field"
+                    onChange={(e) => {
+                      let val = e.target.value;
+                      if (hasSavedToken && !isTokenEdited) {
+                        setIsTokenEdited(true);
+                        val = val.replaceAll("•", "").replaceAll("●", "");
+                      }
+                      setTelegramData((prev) => ({
+                        ...prev,
+                        telegramBotToken: val,
+                      }));
+                    }}
+                    onFocus={(e) => {
+                      if (hasSavedToken && !isTokenEdited) {
+                        e.target.select();
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (hasSavedToken && !isTokenEdited && (e.key === "Backspace" || e.key === "Delete")) {
+                        e.preventDefault();
+                        setIsTokenEdited(true);
+                        setTelegramData((prev) => ({ ...prev, telegramBotToken: "" }));
+                      }
+                    }}
+                    value={hasSavedToken && !isTokenEdited ? MASKED_PLACEHOLDER : telegramData.telegramBotToken}
+                    placeholder="Enter your Telegram Bot API token"
+                  />
+                </div>
+
+                <div className="input-block">
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                    <label className="input-label" htmlFor="telegramChannelId">
+                      Telegram Channel ID
+                    </label>
+                    {hasSavedChannel && !isChannelEdited && (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsChannelEdited(true);
+                          setTelegramData((prev) => ({ ...prev, telegramChannelId: "" }));
+                        }}
+                        style={{
+                          fontSize: "12px",
+                          fontWeight: 500,
+                          color: "var(--accent-blue)",
+                          cursor: "pointer",
+                          padding: 0,
+                          background: "none",
+                          border: "none",
+                        }}
+                      >
+                        Replace ID
+                      </button>
+                    )}
+                  </div>
+                  <input
+                    id="telegramChannelId"
+                    type="password"
+                    className="text-input-field"
+                    onChange={(e) => {
+                      let val = e.target.value;
+                      if (hasSavedChannel && !isChannelEdited) {
+                        setIsChannelEdited(true);
+                        val = val.replaceAll("•", "").replaceAll("●", "");
+                      }
+                      setTelegramData((prev) => ({
+                        ...prev,
+                        telegramChannelId: val,
+                      }));
+                    }}
+                    onFocus={(e) => {
+                      if (hasSavedChannel && !isChannelEdited) {
+                        e.target.select();
+                      }
+                    }}
+                    onKeyDown={(e) => {
+                      if (hasSavedChannel && !isChannelEdited && (e.key === "Backspace" || e.key === "Delete")) {
+                        e.preventDefault();
+                        setIsChannelEdited(true);
+                        setTelegramData((prev) => ({ ...prev, telegramChannelId: "" }));
+                      }
+                    }}
+                    value={hasSavedChannel && !isChannelEdited ? MASKED_PLACEHOLDER : telegramData.telegramChannelId}
+                    placeholder="Enter your Telegram Channel ID"
+                  />
+                </div>
+
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                    paddingTop: "4px",
+                  }}
+                >
+                  <p
+                    style={{
+                      fontSize: "12.5px",
+                      color: "var(--text-dark-muted)",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                    }}
+                  >
+                    <LockKey size={14} />
+                    <span>Keep your Bot API token private. Never share it publicly.</span>
+                  </p>
+
+                  <div style={{ display: "flex", alignItems: "center", gap: "10px", flexWrap: "wrap" }}>
+                    {successMessage && (
+                      <div
+                        role="status"
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "6px",
+                          padding: "6px 14px",
+                          borderRadius: "var(--radius-pill)",
+                          background: "var(--success-subtle)",
+                          border: "1px solid rgba(22, 163, 74, 0.25)",
+                          color: "var(--success)",
+                          fontSize: "13px",
+                          fontWeight: 500,
+                          animation: "toastSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards",
+                          whiteSpace: "nowrap",
+                        }}
+                      >
+                        <CheckCircle size={15} weight="fill" />
+                        <span>{successMessage}</span>
+                      </div>
+                    )}
+
+                    <button
+                      type="submit"
+                      className="btn-primary"
+                      style={{ padding: "10px 24px", fontSize: "13.5px" }}
+                    >
+                      Update
+                    </button>
+                  </div>
+                </div>
+              </form>
+            </div>
+
             {/* Storage & Plan Card */}
             <div className="editorial-card" style={{ borderRadius: "var(--radius-xl)" }}>
               <h2 style={{ fontSize: "18px", fontWeight: 600, letterSpacing: "-0.02em", marginBottom: "4px" }}>
@@ -206,6 +508,23 @@ export default function Setting() {
                   >
                     Protected
                   </span>
+                </div>
+
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "16px", borderTop: "1px solid var(--border-light)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+                    <BookOpen size={22} weight="bold" />
+                    <div>
+                      <div style={{ fontSize: "14.5px", fontWeight: 600 }}>Telegram Storage Setup</div>
+                      <div style={{ fontSize: "13px", color: "var(--text-dark-muted)" }}>Step-by-step bot and private channel instructions</div>
+                    </div>
+                  </div>
+                  <Link
+                    to="/guide"
+                    className="btn-secondary"
+                    style={{ padding: "6px 14px", fontSize: "12.5px" }}
+                  >
+                    Read Guide
+                  </Link>
                 </div>
               </div>
             </div>

@@ -13,6 +13,15 @@ const userSchema=new mongoose.Schema({
         type:String,
         required:true,
     },
+    telegramBotToken: {
+      type: String,
+      default: null,
+    },
+
+    telegramChannelId: {
+      type: String,
+      default: null,
+    },
 });
 
 const User=mongoose.model("User",userSchema);

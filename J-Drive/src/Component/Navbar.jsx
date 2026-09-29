@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate, useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import axios from "axios";
-import { HardDrives, SignOut, Gear, House, List, X } from "@phosphor-icons/react";
+import { HardDrives, SignOut, Gear, House, List, X, BookOpen } from "@phosphor-icons/react";
 import { motion, useScroll, useMotionValueEvent, useReducedMotion } from "motion/react";
 import "../global.css";
 
@@ -12,7 +12,6 @@ export default function Navbar({ forceTheme }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
 
-  const navigate = useNavigate();
   const location = useLocation();
   const shouldReduceMotion = useReducedMotion();
   const { scrollY } = useScroll();
@@ -50,7 +49,7 @@ export default function Navbar({ forceTheme }) {
       setUserName(response.data.name);
       setEmail(response.data.email);
       setIsLoggedIn(true);
-    } catch (error) {
+    } catch {
       setIsLoggedIn(false);
       setUserName("");
       setEmail("");
@@ -63,11 +62,11 @@ export default function Navbar({ forceTheme }) {
 
   const initials = userName
     ? userName
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-        .slice(0, 2)
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2)
     : "U";
 
   return (
@@ -98,6 +97,14 @@ export default function Navbar({ forceTheme }) {
                 <span>Workspaces</span>
               </Link>
               <Link
+                to="/guide"
+                className={`nav-link ${location.pathname === "/guide" ? "active" : ""}`}
+                style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
+              >
+                <BookOpen size={15} />
+                <span>Guide</span>
+              </Link>
+              <Link
                 to="/setting"
                 className={`nav-link ${location.pathname === "/setting" ? "active" : ""}`}
                 style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}
@@ -111,6 +118,12 @@ export default function Navbar({ forceTheme }) {
               <a href="/#workflow" className="nav-link">Workflow</a>
               <a href="/#capabilities" className="nav-link">Capabilities</a>
               <a href="/#security" className="nav-link">Security</a>
+              <Link
+                to="/guide"
+                className={`nav-link ${location.pathname === "/guide" ? "active" : ""}`}
+              >
+                Storage Guide
+              </Link>
             </>
           )}
         </nav>
@@ -193,6 +206,14 @@ export default function Navbar({ forceTheme }) {
                 <House size={16} /> Workspaces
               </Link>
               <Link
+                to="/guide"
+                className="btn-secondary"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{ justifyContent: "flex-start", gap: "8px" }}
+              >
+                <BookOpen size={16} /> Storage Guide
+              </Link>
+              <Link
                 to="/setting"
                 className="btn-secondary"
                 onClick={() => setMobileMenuOpen(false)}
@@ -237,6 +258,14 @@ export default function Navbar({ forceTheme }) {
               >
                 Security
               </a>
+              <Link
+                to="/guide"
+                className="nav-link"
+                onClick={() => setMobileMenuOpen(false)}
+                style={{ padding: "8px 0" }}
+              >
+                Storage Guide
+              </Link>
               <hr style={{ borderColor: isDark ? "rgba(255,255,255,0.1)" : "var(--border-light)", margin: "4px 0" }} />
               <Link
                 to="/login"

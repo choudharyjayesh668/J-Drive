@@ -1,9 +1,7 @@
 const File = require("../models/files");
-const fs = require("fs");
 const FormDataPackage = require("form-data");
 const axios = require("axios");
 const path = require("path");
-
 const uploadFile = async (req, res) => {
   const { folderId } = req.params;
   try {
@@ -20,7 +18,7 @@ const uploadFile = async (req, res) => {
       });
     }
     for (const file of req.files) {
-      const fileBuffer = fs.readFileSync(file.path);
+      const fileBuffer = file.buffer;
       const formData = new FormDataPackage();
       formData.append("document", fileBuffer, {
         filename: file.originalname,
@@ -28,10 +26,10 @@ const uploadFile = async (req, res) => {
       });
       formData.append(
         "chat_id",
-        process.env.TELEGRAM_CHANNEL_ID
+        req.telegramChannelId
       );
       const response = await axios.post(
-        `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendDocument`,
+        `https://api.telegram.org/bot${req.telegramBotToken}/sendDocument`,
         formData,
         {
           headers: formData.getHeaders(),
@@ -95,9 +93,9 @@ const deleteFile = async (req, res) => {
       });
     }
     await axios.post(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/deleteMessage`,
+      `https://api.telegram.org/bot${req.telegramBotToken}/deleteMessage`,
       {
-        chat_id: process.env.TELEGRAM_CHANNEL_ID,
+        chat_id: req.telegramChannelId,
         message_id: file.messageId,
       }
     );
@@ -128,7 +126,7 @@ const viewFile = async (req, res) => {
       });
     }
     const response = await axios.get(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getFile`,
+      `https://api.telegram.org/bot${req.telegramBotToken}/getFile`,
       {
         params: {
           file_id: file.telegramFileId,
@@ -137,7 +135,7 @@ const viewFile = async (req, res) => {
     );
     const filePath = response.data.result.file_path;
     const telegramUrl =
-      `https://api.telegram.org/file/bot${process.env.TELEGRAM_BOT_TOKEN}/${filePath}`;
+      `https://api.telegram.org/file/bot${req.telegramBotToken}/${filePath}`;
     const telegramResponse = await axios.get(telegramUrl, {
       responseType: "stream",
     });
@@ -183,7 +181,7 @@ const downloadFile = async (req, res) => {
       });
     }
     const response = await axios.get(
-      `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/getFile`,
+      `https://api.telegram.org/bot${req.telegramBotToken}/getFile`,
       {
         params: {
           file_id: file.telegramFileId,
@@ -192,7 +190,7 @@ const downloadFile = async (req, res) => {
     );
     const filePath = response.data.result.file_path;
     const telegramUrl =
-      `https://api.telegram.org/file/bot${process.env.TELEGRAM_BOT_TOKEN}/${filePath}`;
+      `https://api.telegram.org/file/bot${req.telegramBotToken}/${filePath}`;
     const telegramResponse = await axios.get(telegramUrl, {
       responseType: "stream",
     });
