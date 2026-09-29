@@ -98,12 +98,16 @@ const login = async (req, res) => {
     }
 };
 const logout = (req, res) => {
+    const isProduction = process.env.NODE_ENV === "production";
+
     res.clearCookie("token", {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
     });
+
     return res.status(200).json({
+        success: true,
         message: "Logged out successfully",
     });
 };
@@ -113,10 +117,72 @@ const verify = (req, res) => {
         authenticated: true,
     });
 };
+const getMe = async (req, res) => {
+  try {
+    const user = await User.findById(req.userId).select(
+      "username email telegramBotToken telegramChannelId"
+    );
 
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: "User Not Found",
+      });
+    }
+
+    return res.status(200).json({
+    success: true,
+    name: user.username,
+    email: user.email,
+    telegramBotToken: Boolean(user.telegramBotToken),
+    telegramChannelId: user.telegramChannelId || "",
+    });
+  } catch (error) {
+    console.error("Get me error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
+
+const updateTelegramData = async (req, res) => {
+  try {
+    const { telegramBotToken, telegramChannelId } = req.body;
+
+    const user = await User.findById(req.userId);
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User Not Found",
+      });
+    }
+
+    user.telegramBotToken = telegramBotToken;
+    user.telegramChannelId = telegramChannelId;
+
+    await user.save();
+
+    return res.status(200).json({
+      success: true,
+      message: "Telegram Api and Channel Id Updated",
+    });
+  } catch (error) {
+    console.error("Update Telegram data error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 module.exports = {
     signup,
     login,
     logout,
-    verify
+    verify,
+    getMe,
+    updateTelegramData,
 };
