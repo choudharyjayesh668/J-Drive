@@ -1,100 +1,327 @@
-import { useState } from "react"
+import { useState } from "react";
 import axios from "axios";
 import Navbar from "../Component/Navbar";
-import { useNavigate } from "react-router-dom";
-export default function Login(){
-    const navigate = useNavigate();
-    const [userdata,setUserData]=useState({email:"",password:""});
-    const [error,setError] = useState(
-        {
-            email:"",
-            password:"",
-        },
-    );
-        const validationForm = () => {
-    const {
-        email,
-        password,
-    } = userdata;
+import { useNavigate, Link } from "react-router-dom";
+import { HardDrives, ArrowRight, LockKey, EnvelopeSimple } from "@phosphor-icons/react";
+import Reveal from "../Component/Reveal";
+import MagneticButton from "../Component/MagneticButton";
 
-    const newError = {
-        email: "",
-        password: "",
-        server: "",
-    };
+export default function Login() {
+  const navigate = useNavigate();
+  const [userdata, setUserData] = useState({ email: "", password: "" });
+  const [error, setError] = useState({
+    email: "",
+    password: "",
+    server: "",
+  });
+  const [submitting, setSubmitting] = useState(false);
+
+  const validationForm = () => {
+    const { email, password } = userdata;
+    const newError = { email: "", password: "", server: "" };
 
     if (!email.trim()) {
-        newError.email = "Enter Email";
+      newError.email = "Please enter your email address";
     }
 
     if (!password) {
-        newError.password = "Enter Password";
+      newError.password = "Please enter your password";
     }
 
     setError(newError);
+    return !Object.values(newError).some((message) => message !== "");
+  };
 
-    return !Object.values(newError).some(
-        (message) => message !== ""
-        );
-    };
-    const handleOnChange = (event) => {
-        const { name, value } = event.target;
-        setUserData((curruserdata) => ({
-            ...curruserdata,
-            [name]: value,
-        }));
-        setError((prev) => ({
-            ...prev,
-            [name]: "",
-            server: "",
-        }));
-    };
-    const handleOnSubmit=async(event)=>{
-        event.preventDefault();
-        const isValid = validationForm();
-        if(!isValid) return;
-        try{
-            const response = await axios.post(
-            `${import.meta.env.VITE_API_URL}/login`,
-            userdata,
-            {
-                withCredentials: true
-            }
-        )
-        console.log(response.data);
-        navigate("/homepage");
-        }catch(error){
-            const message = error.response?.data?.message;
-            console.log(message);
-            setError((prev) => ({
-                ...prev,
-                email: message || "Something went wrong",
-            }));
-        }
+  const handleOnChange = (event) => {
+    const { name, value } = event.target;
+    setUserData((curruserdata) => ({
+      ...curruserdata,
+      [name]: value,
+    }));
+    setError((prev) => ({
+      ...prev,
+      [name]: "",
+      server: "",
+    }));
+  };
+
+  const handleOnSubmit = async (event) => {
+    event.preventDefault();
+    const isValid = validationForm();
+    if (!isValid) return;
+
+    setSubmitting(true);
+    try {
+      await axios.post(
+        `${import.meta.env.VITE_API_URL}/login`,
+        userdata,
+        { withCredentials: true }
+      );
+      navigate("/homepage");
+    } catch (err) {
+      const message = err.response?.data?.message || "Invalid email or password";
+      setError((prev) => ({
+        ...prev,
+        server: message,
+      }));
+    } finally {
+      setSubmitting(false);
     }
-    return(
-        <>
-        <Navbar/>
-            <div className="signup">
-                <h1>Welcome To Login</h1>
-                <form onSubmit={handleOnSubmit}>
-                <input type="text"
-                placeholder="Enter Email"
-                value={userdata.email}
-                onChange={handleOnChange}
-                name="email"
-                />
-                {error.email && <p className="error">{error.email}</p>}
-                <input type="password"
-                placeholder="Enter Password"
-                value={userdata.password}
-                onChange={handleOnChange}
-                name="password"
-                />
-                {error.password && <p className="error">{error.password}</p>}
-                <button type="submit">Submit</button>
-                </form>
+  };
+
+  return (
+    <div
+      style={{
+        background: "var(--canvas-dark)",
+        minHeight: "100dvh",
+        color: "var(--text-light)",
+        display: "flex",
+        flexDirection: "column",
+        position: "relative",
+      }}
+    >
+      {/* Seamless Floating Navbar matching Landing Page */}
+      <Navbar forceTheme="dark" />
+
+      {/* Main Split Layout Container */}
+      <main
+        style={{
+          flex: 1,
+          display: "grid",
+          gridTemplateColumns: "1fr",
+          minHeight: "100dvh",
+          paddingTop: "76px",
+        }}
+        className="lg:!grid-cols-12"
+      >
+        {/* Left Side: Cinematic Archival Storage Visual (Desktop & Tablet) */}
+        <div
+          style={{
+            gridColumn: "span 6",
+            position: "relative",
+            margin: "clamp(12px, 2vw, 24px)",
+            borderRadius: "var(--radius-xl)",
+            overflow: "hidden",
+            border: "1px solid var(--border-dark)",
+            display: "none",
+          }}
+          className="lg:!flex flex-col justify-end"
+        >
+          {/* Background Image */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              backgroundImage: "url('/images/auth-login.jpg')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              filter: "brightness(0.72) contrast(1.05)",
+            }}
+          />
+
+          {/* Vignette Gradients */}
+          <div
+            style={{
+              position: "absolute",
+              inset: 0,
+              background:
+                "linear-gradient(to top, rgba(13,13,14,0.92) 0%, rgba(13,13,14,0.4) 40%, rgba(13,13,14,0.15) 100%)",
+            }}
+          />
+
+          {/* Editorial Caption Box */}
+          <div style={{ position: "relative", zIndex: 2, padding: "clamp(32px, 5vw, 48px)" }}>
+            <div
+              style={{
+                display: "inline-block",
+                fontSize: "11px",
+                fontWeight: 600,
+                letterSpacing: "0.08em",
+                color: "rgba(255, 255, 255, 0.6)",
+                marginBottom: "12px",
+                textTransform: "uppercase",
+              }}
+            >
+              Archival Access
             </div>
-        </>
-    )
+            <h2
+              style={{
+                fontSize: "clamp(1.6rem, 2.4vw, 2.2rem)",
+                fontWeight: 600,
+                letterSpacing: "-0.03em",
+                lineHeight: 1.15,
+                color: "#FFFFFF",
+                marginBottom: "10px",
+              }}
+            >
+              Uncompressed fidelity.
+            </h2>
+            <p
+              style={{
+                fontSize: "14.5px",
+                lineHeight: 1.6,
+                color: "rgba(255, 255, 255, 0.72)",
+                maxWidth: "40ch",
+              }}
+            >
+              Every file, raw capture, and master asset preserved exactly as ingested.
+            </p>
+          </div>
+        </div>
+
+        {/* Right Side: Form Panel */}
+        <div
+          style={{
+            gridColumn: "span 6",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "clamp(24px, 5vw, 48px)",
+          }}
+        >
+          <div style={{ width: "100%", maxWidth: "420px" }}>
+            <Reveal y={24} duration={0.6}>
+              {/* Brand & Heading */}
+              <div style={{ marginBottom: "32px" }}>
+                <div
+                  style={{
+                    display: "inline-flex",
+                    alignItems: "center",
+                    gap: "8px",
+                    color: "rgba(255, 255, 255, 0.5)",
+                    fontSize: "13px",
+                    fontWeight: 500,
+                    marginBottom: "16px",
+                  }}
+                >
+                  <div
+                    style={{
+                      width: "22px",
+                      height: "22px",
+                      borderRadius: "5px",
+                      background: "#FFFFFF",
+                      color: "#0D0D0E",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                    }}
+                  >
+                    <HardDrives weight="bold" size={13} />
+                  </div>
+                  <span>J-Drive Vault</span>
+                </div>
+
+                <h1
+                  style={{
+                    fontSize: "clamp(1.8rem, 2.5vw, 2.2rem)",
+                    fontWeight: 600,
+                    letterSpacing: "-0.03em",
+                    lineHeight: 1.15,
+                    color: "#FFFFFF",
+                    marginBottom: "8px",
+                  }}
+                >
+                  Sign in to your vault
+                </h1>
+                <p style={{ fontSize: "14.5px", color: "var(--text-light-muted)", lineHeight: 1.5 }}>
+                  Enter your verified credentials to access your workspaces.
+                </p>
+              </div>
+
+              {/* Server-level error banner */}
+              {error.server && (
+                <div
+                  style={{
+                    background: "rgba(220, 38, 38, 0.12)",
+                    border: "1px solid rgba(220, 38, 38, 0.28)",
+                    borderRadius: "var(--radius-md)",
+                    padding: "12px 16px",
+                    marginBottom: "24px",
+                    color: "#FCA5A5",
+                    fontSize: "13.5px",
+                    lineHeight: 1.4,
+                  }}
+                >
+                  {error.server}
+                </div>
+              )}
+
+              {/* Form */}
+              <form onSubmit={handleOnSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
+                <div className="input-block">
+                  <label htmlFor="login-email" className="input-label-dark">
+                    Email address
+                  </label>
+                  <input
+                    id="login-email"
+                    type="email"
+                    name="email"
+                    placeholder="name@work.com"
+                    value={userdata.email}
+                    onChange={handleOnChange}
+                    className="text-input-dark"
+                    autoComplete="email"
+                  />
+                  {error.email && <p className="input-error-msg">{error.email}</p>}
+                </div>
+
+                <div className="input-block">
+                  <label htmlFor="login-password" className="input-label-dark">
+                    Password
+                  </label>
+                  <input
+                    id="login-password"
+                    type="password"
+                    name="password"
+                    placeholder="Your account password"
+                    value={userdata.password}
+                    onChange={handleOnChange}
+                    className="text-input-dark"
+                    autoComplete="current-password"
+                  />
+                  {error.password && <p className="input-error-msg">{error.password}</p>}
+                </div>
+
+                <div style={{ marginTop: "8px" }}>
+                  <MagneticButton
+                    type="submit"
+                    disabled={submitting}
+                    className="btn-white"
+                    style={{ width: "100%", height: "48px", fontSize: "14.5px" }}
+                  >
+                    <span>{submitting ? "Signing in..." : "Sign in to J-Drive"}</span>
+                    <ArrowRight weight="bold" size={15} />
+                  </MagneticButton>
+                </div>
+              </form>
+
+              {/* Footer link */}
+              <div
+                style={{
+                  marginTop: "32px",
+                  paddingTop: "24px",
+                  borderTop: "1px solid var(--border-dark)",
+                  fontSize: "13.5px",
+                  color: "var(--text-light-muted)",
+                }}
+              >
+                No vault yet?{" "}
+                <Link
+                  to="/signup"
+                  style={{
+                    color: "#FFFFFF",
+                    fontWeight: 600,
+                    textDecoration: "underline",
+                    textUnderlineOffset: "3px",
+                  }}
+                >
+                  Create free account
+                </Link>
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </main>
+    </div>
+  );
 }
