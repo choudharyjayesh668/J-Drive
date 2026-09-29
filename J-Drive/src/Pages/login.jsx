@@ -21,11 +21,11 @@ export default function Login() {
     const newError = { email: "", password: "", server: "" };
 
     if (!email.trim()) {
-      newError.email = "Please enter your email address";
+      newError.email = "Please enter your email.";
     }
 
     if (!password) {
-      newError.password = "Please enter your password";
+      newError.password = "Please enter your password.";
     }
 
     setError(newError);
@@ -59,7 +59,12 @@ export default function Login() {
       );
       navigate("/homepage");
     } catch (err) {
-      const message = err.response?.data?.message || "Invalid email or password";
+      let message = "Something went wrong. Please try again.";
+      if (err.response?.status === 401) {
+        message = "Email or password is incorrect.";
+      } else if (err.response?.data?.message && err.response?.status < 500) {
+        message = err.response.data.message;
+      }
       setError((prev) => ({
         ...prev,
         server: message,
@@ -142,7 +147,7 @@ export default function Login() {
                 textTransform: "uppercase",
               }}
             >
-              Archival Access
+              J-Drive
             </div>
             <h2
               style={{
@@ -154,7 +159,7 @@ export default function Login() {
                 marginBottom: "10px",
               }}
             >
-              Uncompressed fidelity.
+              Your files, organized.
             </h2>
             <p
               style={{
@@ -164,7 +169,7 @@ export default function Login() {
                 maxWidth: "40ch",
               }}
             >
-              Every file, raw capture, and master asset preserved exactly as ingested.
+              Upload, preview, and access your files and folders from any browser.
             </p>
           </div>
         </div>
@@ -208,7 +213,7 @@ export default function Login() {
                   >
                     <HardDrives weight="bold" size={13} />
                   </div>
-                  <span>J-Drive Vault</span>
+                  <span>J-Drive</span>
                 </div>
 
                 <h1
@@ -221,10 +226,10 @@ export default function Login() {
                     marginBottom: "8px",
                   }}
                 >
-                  Sign in to your vault
+                  Welcome back
                 </h1>
                 <p style={{ fontSize: "14.5px", color: "var(--text-light-muted)", lineHeight: 1.5 }}>
-                  Enter your verified credentials to access your workspaces.
+                  Sign in to access your files and folders.
                 </p>
               </div>
 
@@ -250,13 +255,13 @@ export default function Login() {
               <form onSubmit={handleOnSubmit} style={{ display: "flex", flexDirection: "column", gap: "20px" }}>
                 <div className="input-block">
                   <label htmlFor="login-email" className="input-label-dark">
-                    Email address
+                    Email
                   </label>
                   <input
                     id="login-email"
                     type="email"
                     name="email"
-                    placeholder="name@work.com"
+                    placeholder="name@example.com"
                     value={userdata.email}
                     onChange={handleOnChange}
                     className="text-input-dark"
@@ -273,7 +278,7 @@ export default function Login() {
                     id="login-password"
                     type="password"
                     name="password"
-                    placeholder="Your account password"
+                    placeholder="Enter your password"
                     value={userdata.password}
                     onChange={handleOnChange}
                     className="text-input-dark"
@@ -289,7 +294,7 @@ export default function Login() {
                     className="btn-white"
                     style={{ width: "100%", height: "48px", fontSize: "14.5px" }}
                   >
-                    <span>{submitting ? "Signing in..." : "Sign in to J-Drive"}</span>
+                    <span>{submitting ? "Signing in..." : "Sign In"}</span>
                     <ArrowRight weight="bold" size={15} />
                   </MagneticButton>
                 </div>
@@ -305,7 +310,7 @@ export default function Login() {
                   color: "var(--text-light-muted)",
                 }}
               >
-                No vault yet?{" "}
+                Don't have an account?{" "}
                 <Link
                   to="/signup"
                   style={{
@@ -315,7 +320,7 @@ export default function Login() {
                     textUnderlineOffset: "3px",
                   }}
                 >
-                  Create free account
+                  Create Account
                 </Link>
               </div>
             </Reveal>

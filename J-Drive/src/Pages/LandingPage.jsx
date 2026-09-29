@@ -30,10 +30,11 @@ export default function LandingPage() {
           minHeight: "100dvh",
           display: "flex",
           flexDirection: "column",
-          justifyContent: "flex-end",
-          padding: "clamp(24px, 5vw, 64px)",
-          paddingBottom: "clamp(48px, 8vw, 84px)",
+          justifyContent: "center",
+          alignItems: "center",
+          padding: "clamp(80px, 12vh, 120px) clamp(24px, 5vw, 64px)",
           overflow: "hidden",
+          textAlign: "center",
         }}
       >
         {/* Full-bleed atmospheric cinematic background */}
@@ -44,30 +45,33 @@ export default function LandingPage() {
             zIndex: 0,
             backgroundImage: "url('/images/hero-cinematic.jpg')",
             backgroundSize: "cover",
-            backgroundPosition: "center 35%",
-            filter: "brightness(0.65) contrast(1.05)",
+            backgroundPosition: "center",
+            filter: "brightness(0.78) contrast(1.05)",
           }}
         />
 
-        {/* Cinematic gradient overlay for typography readability */}
+        {/* Cinematic gradient overlay for typography readability and smooth section transition */}
         <div
           style={{
             position: "absolute",
             inset: 0,
             zIndex: 1,
             background:
-              "linear-gradient(to bottom, rgba(13,13,14,0.4) 0%, rgba(13,13,14,0.2) 30%, rgba(13,13,14,0.75) 80%, #0D0D0E 100%)",
+              "linear-gradient(to bottom, rgba(13,13,14,0.3) 0%, rgba(13,13,14,0.35) 50%, rgba(13,13,14,0.8) 85%, #0D0D0E 100%)",
           }}
         />
 
-        {/* Hero Content Stack (Max 4 text elements per Taste Skill Pre-Flight) */}
+        {/* Hero Content Stack (Centered in middle of viewport) */}
         <div
           style={{
             position: "relative",
             zIndex: 2,
-            maxWidth: "1080px",
+            maxWidth: "860px",
             margin: "0 auto",
             width: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
           }}
         >
           <Reveal y={40} duration={0.8}>
@@ -78,11 +82,12 @@ export default function LandingPage() {
                 letterSpacing: "-0.035em",
                 lineHeight: 1.05,
                 color: "#FFFFFF",
-                maxWidth: "18ch",
-                marginBottom: "20px",
+                maxWidth: "20ch",
+                margin: "0 auto 20px auto",
+                textShadow: "0 2px 20px rgba(0,0,0,0.5)",
               }}
             >
-              Permanence for your digital life.
+              Your files, organized.
             </h1>
           </Reveal>
 
@@ -90,19 +95,20 @@ export default function LandingPage() {
             <p
               style={{
                 fontSize: "clamp(1.05rem, 1.8vw, 1.35rem)",
-                color: "rgba(255, 255, 255, 0.72)",
+                color: "rgba(255, 255, 255, 0.85)",
                 lineHeight: 1.55,
-                maxWidth: "46ch",
-                marginBottom: "32px",
+                maxWidth: "48ch",
+                margin: "0 auto 32px auto",
                 fontWeight: 400,
+                textShadow: "0 1px 12px rgba(0,0,0,0.5)",
               }}
             >
-              A calm, dependable vault for your documents, high-fidelity media, and project archives.
+              J-Drive gives you one simple place to upload, organize, preview, and manage your files.
             </p>
           </Reveal>
 
           <Reveal y={24} delay={0.25} duration={0.8}>
-            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: "16px" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "center", gap: "16px" }}>
               <Link to="/signup">
                 <MagneticButton className="btn-white" style={{ padding: "14px 28px", fontSize: "15px" }}>
                   <span>Get Started Free</span>
@@ -111,7 +117,7 @@ export default function LandingPage() {
               </Link>
 
               <Link to="/login" className="btn-secondary-dark" style={{ padding: "14px 24px", fontSize: "15px" }}>
-                Sign In to Vault
+                Sign In
               </Link>
             </div>
           </Reveal>
@@ -142,7 +148,7 @@ export default function LandingPage() {
                 marginBottom: "24px",
               }}
             >
-              Storage engineered to be quiet, uncompressed, and instantly accessible.
+              Everything you need to keep your files organized.
             </h2>
           </Reveal>
 
@@ -156,7 +162,7 @@ export default function LandingPage() {
                 margin: "0 auto",
               }}
             >
-              Your work stays in its raw, original state. No compression artifacts, no opaque lock-in, and zero friction.
+              Upload your files, keep them in folders, preview them when you need them, and manage everything from one place.
             </p>
           </Reveal>
         </div>
@@ -195,7 +201,7 @@ export default function LandingPage() {
                   marginBottom: "20px",
                 }}
               >
-                The J-Drive standard.
+                Everything in one place.
               </h2>
               <p
                 style={{
@@ -205,7 +211,7 @@ export default function LandingPage() {
                   maxWidth: "38ch",
                 }}
               >
-                Engineered from the ground up for individuals and teams who care about preserving original file fidelity.
+                J-Drive keeps your files and folders organized in a simple workspace that's easy to navigate.
               </p>
             </Reveal>
           </div>
@@ -235,10 +241,10 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <h3 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "8px", letterSpacing: "-0.02em" }}>
-                    Uncompressed Uploads
+                    Simple File Uploads
                   </h3>
                   <p style={{ fontSize: "15px", lineHeight: 1.6, color: "var(--text-light-muted)" }}>
-                    Send any file format at byte-for-byte fidelity. Real-time multi-file progress tracking keeps you informed every second.
+                    Upload one or multiple files and keep track of their progress as they are added to your workspace.
                   </p>
                 </div>
               </div>
@@ -267,10 +273,10 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <h3 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "8px", letterSpacing: "-0.02em" }}>
-                    Instant In-Browser Inspection
+                    Preview Files in Your Browser
                   </h3>
                   <p style={{ fontSize: "15px", lineHeight: 1.6, color: "var(--text-light-muted)" }}>
-                    Preview high-resolution photography, streaming videos, and multipage PDF documents directly without waiting for manual downloads.
+                    Open supported images, videos, PDFs, and other files without downloading them first.
                   </p>
                 </div>
               </div>
@@ -299,10 +305,10 @@ export default function LandingPage() {
                 </div>
                 <div>
                   <h3 style={{ fontSize: "20px", fontWeight: 600, marginBottom: "8px", letterSpacing: "-0.02em" }}>
-                    Structured Workspaces
+                    Folders That Stay Organized
                   </h3>
                   <p style={{ fontSize: "15px", lineHeight: 1.6, color: "var(--text-light-muted)" }}>
-                    Organize your documents into dedicated workspaces. Rename folders, navigate with double-clicks, and keep clutter out of sight.
+                    Create folders, rename them, open them, and keep related files together.
                   </p>
                 </div>
               </div>
@@ -334,7 +340,7 @@ export default function LandingPage() {
                   color: "var(--text-dark)",
                 }}
               >
-                Built for every medium.
+                Keep every kind of file together.
               </h2>
               <p
                 style={{
@@ -344,7 +350,7 @@ export default function LandingPage() {
                   maxWidth: "50ch",
                 }}
               >
-                From multipage production briefs to RAW captures and video reels, your assets are preserved with absolute clarity.
+                Documents, images, videos, PDFs, and project files can all live in the same organized workspace.
               </p>
             </Reveal>
           </div>
@@ -372,7 +378,7 @@ export default function LandingPage() {
                 >
                   <img
                     src="/images/archive-visual.jpg"
-                    alt="Organized archival folders and media"
+                    alt="Organized folders and files"
                     className="img-zoom-item"
                   />
                   <div
@@ -388,10 +394,10 @@ export default function LandingPage() {
                     }}
                   >
                     <h3 style={{ fontSize: "20px", fontWeight: 600, letterSpacing: "-0.02em", marginBottom: "4px" }}>
-                      Original Fidelity Ingestion
+                      Keep Your Original Files
                     </h3>
                     <p style={{ fontSize: "14px", color: "rgba(255,255,255,0.75)" }}>
-                      Every byte preserved exactly as created, with zero compression or quality loss.
+                      Upload your files as they are and keep them organized without changing the way you work with them.
                     </p>
                   </div>
                 </div>
@@ -431,10 +437,10 @@ export default function LandingPage() {
                       <Folders size={24} weight="fill" />
                     </div>
                     <h3 style={{ fontSize: "22px", fontWeight: 600, letterSpacing: "-0.02em", marginBottom: "10px" }}>
-                      Universal File Handling
+                      Different Files, One Workspace
                     </h3>
                     <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "var(--text-dark-muted)" }}>
-                      Seamlessly store and inspect documents, high-res photography, production video, and compressed archives in unified workspaces.
+                      Keep documents, images, videos, PDFs, and other supported files together in one place.
                     </p>
                   </div>
 
@@ -475,7 +481,7 @@ export default function LandingPage() {
                 >
                   <img
                     src="/images/gallery-light.jpg"
-                    alt="Modern document archive repository"
+                    alt="Previewing files directly in workspace"
                     className="img-zoom-item"
                   />
                   <div
@@ -491,10 +497,10 @@ export default function LandingPage() {
                     }}
                   >
                     <h3 style={{ fontSize: "22px", fontWeight: 600, letterSpacing: "-0.02em", marginBottom: "6px" }}>
-                      Instant Document & Media Viewers
+                      Preview Without Downloading
                     </h3>
                     <p style={{ fontSize: "14.5px", color: "rgba(255,255,255,0.75)", maxWidth: "56ch" }}>
-                      Inspect PDF reports and multimedia without third-party plugins. Click any row to open our custom responsive preview modal.
+                      Open supported files directly in J-Drive and quickly check what you uploaded.
                     </p>
                   </div>
                 </div>
@@ -526,10 +532,10 @@ export default function LandingPage() {
                   marginBottom: "16px",
                 }}
               >
-                Security by default.
+                Built with security in mind.
               </h2>
               <p style={{ fontSize: "15.5px", lineHeight: 1.6, color: "var(--text-light-muted)" }}>
-                Built with industry standard safeguards so you always retain full sovereignty over your data.
+                J-Drive uses authentication and server-side access checks to keep each user's files separated.
               </p>
             </div>
           </Reveal>
@@ -570,7 +576,7 @@ export default function LandingPage() {
                   HTTP-Only JWT Authentication
                 </h3>
                 <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "var(--text-light-muted)" }}>
-                  Session tokens reside safely in secure HTTP-only cookies, shielding your account credentials from cross-site script access.
+                  Authentication tokens are stored in HTTP-only cookies to reduce exposure to client-side scripts.
                 </p>
               </div>
             </Reveal>
@@ -601,10 +607,10 @@ export default function LandingPage() {
                   <ShieldCheck size={22} weight="bold" />
                 </div>
                 <h3 style={{ fontSize: "19px", fontWeight: 600, marginBottom: "10px", letterSpacing: "-0.02em" }}>
-                  Strict User Bucket Isolation
+                  User-Level Access Control
                 </h3>
                 <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "var(--text-light-muted)" }}>
-                  Each folder and file query enforces rigorous ownership verification on the server, guaranteeing complete privacy for every user.
+                  File and folder requests are checked against the authenticated user before data is returned or modified.
                 </p>
               </div>
             </Reveal>
@@ -638,7 +644,7 @@ export default function LandingPage() {
                   Direct Binary Streaming
                 </h3>
                 <p style={{ fontSize: "14.5px", lineHeight: 1.6, color: "var(--text-light-muted)" }}>
-                  File downloads and previews stream directly using authentic MIME headers, preventing unwanted transcoding and corruption.
+                  Supported files are streamed directly when previewing or downloading them.
                 </p>
               </div>
             </Reveal>
@@ -701,7 +707,7 @@ export default function LandingPage() {
                     marginBottom: "18px",
                   }}
                 >
-                  Begin with a quiet workspace.
+                  Start organizing your files.
                 </h2>
                 <p
                   style={{
@@ -711,7 +717,7 @@ export default function LandingPage() {
                     marginBottom: "32px",
                   }}
                 >
-                  Experience cloud storage designed for clarity, permanence, and original fidelity.
+                  Create your J-Drive account and keep your files organized in one place.
                 </p>
                 <div>
                   <Link to="/signup">
@@ -782,7 +788,7 @@ export default function LandingPage() {
           </div>
 
           <div>
-            <span>All rights reserved. Dedicated to original fidelity.</span>
+            <span>Simple file management, built for everyday use.</span>
           </div>
         </div>
       </footer>

@@ -36,23 +36,23 @@ export default function Signup() {
     };
 
     if (!username.trim()) {
-      newError.username = "Please enter a username";
+      newError.username = "Please enter your name.";
     }
 
     if (!email.trim()) {
-      newError.email = "Please enter an email address";
+      newError.email = "Please enter your email.";
     }
 
     if (!password) {
-      newError.password = "Please create a password";
+      newError.password = "Please enter your password.";
     }
 
     if (!confirmPassword) {
-      newError.confirmPassword = "Please confirm your password";
+      newError.confirmPassword = "Please confirm your password.";
     }
 
     if (password && confirmPassword && password !== confirmPassword) {
-      newError.matchPassword = "Passwords do not match";
+      newError.matchPassword = "Passwords do not match.";
     }
 
     setError(newError);
@@ -85,7 +85,12 @@ export default function Signup() {
       );
       navigate("/login");
     } catch (err) {
-      const message = err.response?.data?.message || "Failed to create account";
+      let message = "Something went wrong. Please try again.";
+      if (err.response?.status === 409) {
+        message = "An account with this email already exists.";
+      } else if (err.response?.data?.message && err.response?.status < 500) {
+        message = err.response.data.message;
+      }
       setError((prev) => ({
         ...prev,
         server: message,
@@ -168,7 +173,7 @@ export default function Signup() {
                 textTransform: "uppercase",
               }}
             >
-              New Repository
+              J-Drive
             </div>
             <h2
               style={{
@@ -180,7 +185,7 @@ export default function Signup() {
                 marginBottom: "10px",
               }}
             >
-              A permanent digital repository.
+              Your files, organized.
             </h2>
             <p
               style={{
@@ -190,7 +195,7 @@ export default function Signup() {
                 maxWidth: "42ch",
               }}
             >
-              Dedicated personal storage for individuals and teams who care about sovereign file custody.
+              Upload, organize, preview, and manage your files from a clean web interface.
             </p>
           </div>
         </div>
@@ -234,7 +239,7 @@ export default function Signup() {
                   >
                     <HardDrives weight="bold" size={13} />
                   </div>
-                  <span>J-Drive Vault</span>
+                  <span>J-Drive</span>
                 </div>
 
                 <h1
@@ -247,10 +252,10 @@ export default function Signup() {
                     marginBottom: "8px",
                   }}
                 >
-                  Create your personal vault
+                  Create your J-Drive account
                 </h1>
                 <p style={{ fontSize: "14.5px", color: "var(--text-light-muted)", lineHeight: 1.5 }}>
-                  Set up your secure J-Drive account in under a minute.
+                  Start organizing your files in one place.
                 </p>
               </div>
 
@@ -276,30 +281,30 @@ export default function Signup() {
               <form onSubmit={handleOnSubmit} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
                 <div className="input-block">
                   <label htmlFor="signup-username" className="input-label-dark">
-                    Username
+                    Name
                   </label>
                   <input
                     id="signup-username"
                     type="text"
                     name="username"
-                    placeholder="Your name or handle"
+                    placeholder="Your name"
                     value={userdata.username}
                     onChange={handleOnChange}
                     className="text-input-dark"
-                    autoComplete="username"
+                    autoComplete="name"
                   />
                   {error.username && <p className="input-error-msg">{error.username}</p>}
                 </div>
 
                 <div className="input-block">
                   <label htmlFor="signup-email" className="input-label-dark">
-                    Email address
+                    Email
                   </label>
                   <input
                     id="signup-email"
                     type="email"
                     name="email"
-                    placeholder="name@work.com"
+                    placeholder="name@example.com"
                     value={userdata.email}
                     onChange={handleOnChange}
                     className="text-input-dark"
@@ -316,7 +321,7 @@ export default function Signup() {
                     id="signup-password"
                     type="password"
                     name="password"
-                    placeholder="Create a strong password"
+                    placeholder="Enter a password"
                     value={userdata.password}
                     onChange={handleOnChange}
                     className="text-input-dark"
@@ -327,13 +332,13 @@ export default function Signup() {
 
                 <div className="input-block">
                   <label htmlFor="signup-confirm" className="input-label-dark">
-                    Confirm password
+                    Confirm Password
                   </label>
                   <input
                     id="signup-confirm"
                     type="password"
                     name="confirmPassword"
-                    placeholder="Repeat your password"
+                    placeholder="Confirm your password"
                     value={userdata.confirmPassword}
                     onChange={handleOnChange}
                     className="text-input-dark"
@@ -350,7 +355,7 @@ export default function Signup() {
                     className="btn-white"
                     style={{ width: "100%", height: "48px", fontSize: "14.5px" }}
                   >
-                    <span>{submitting ? "Creating account..." : "Create free account"}</span>
+                    <span>{submitting ? "Creating account..." : "Create Account"}</span>
                     <ArrowRight weight="bold" size={15} />
                   </MagneticButton>
                 </div>
@@ -366,7 +371,7 @@ export default function Signup() {
                   color: "var(--text-light-muted)",
                 }}
               >
-                Already have a vault?{" "}
+                Already have an account?{" "}
                 <Link
                   to="/login"
                   style={{
@@ -376,7 +381,7 @@ export default function Signup() {
                     textUnderlineOffset: "3px",
                   }}
                 >
-                  Sign in
+                  Sign In
                 </Link>
               </div>
             </Reveal>
