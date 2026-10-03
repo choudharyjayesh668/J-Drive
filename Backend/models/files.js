@@ -38,7 +38,7 @@ const fileSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
+fileSchema.index({ owner: 1, folder: 1 });
 const File = mongoose.model("File", fileSchema);
 
 module.exports = File;

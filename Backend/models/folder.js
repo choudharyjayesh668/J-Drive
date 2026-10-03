@@ -11,5 +11,6 @@ const folderSchema=new mongoose.Schema({
         required: true,
     },
 });
+folderSchema.index({ owner: 1 });
 const Folder=mongoose.model("Folder",folderSchema);
 module.exports=Folder;
